@@ -9,11 +9,10 @@ define(
 	"actions/actions",
 
 	"components/providersList",
-	"components/channelsList",
+	"components/channelsComponent",
 
 	/* Stores */
-	"stores/providersStore",
-	"stores/channelsStore"
+	"stores/providersStore"
 ],
 function (_,
           Backbone,
@@ -21,9 +20,8 @@ function (_,
           Reflux,
           ACTIONS,
           ProvidersList,
-          ChannelsList,
-          providersStore,
-          channelsStore)
+          ChannelsComponent,
+          providersStore)
 {
     var AppRouter = Backbone.Router.extend(
     {
@@ -64,16 +62,9 @@ function (_,
 
 			this.unsubscribe = [];
 
-			//this.unsubscribe.push(router.listen(this._onRouterEvent));
-
             this.unsubscribe.push(providersStore.listen(function(data)
             {
                 this.setState({ providers: data });
-            }.bind(this)).bind(this));
-
-            this.unsubscribe.push(channelsStore.listen(function(data)
-            {
-                this.setState({ channels: data });
             }.bind(this)).bind(this));
 
 			ACTIONS.getProviders();
@@ -94,9 +85,6 @@ function (_,
 		showChannels: function(providerId)
 		{
 			this.setState({ route: "channels", providerId: providerId });
-			channelsStore.setProviderId(providerId);
-
-			ACTIONS.getChannels();
 		},
 
 		render: function()
@@ -107,7 +95,7 @@ function (_,
 			}
 			else if(this.state.route === "channels")
 			{
-				route = ChannelsList( {providerId:this.state.providerId, channels:this.state.channels} )
+				route = ChannelsComponent( {providerId:this.state.providerId} )
 			}
 
 			return (

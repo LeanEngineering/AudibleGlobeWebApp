@@ -19,7 +19,7 @@ function (_, Backbone, React, Reflux)
 
             return (
                 <div>
-                    <span><button onClick={this._onBackClicked}>Back to all Providers</button></span>
+
                     <h2>Channels for Provider {this.props.providerId}</h2>
                     <div>
                         {channels}
@@ -29,10 +29,7 @@ function (_, Backbone, React, Reflux)
         },
 
         /* Private DOM Event Handlers */
-        _onBackClicked: function()
-        {
-            window.history.back();
-        },
+
 
         /* Private DOM Helpers */
 

@@ -48,6 +48,17 @@ function (_, Backbone, React, Reflux, ACTIONS)
             {
                 this.trigger(data);
             }.bind(this));
+        },
+
+        _onAddChannel: function(name)
+        {
+            var onSuccess = function(data)
+            {
+                this.trigger(this._channels.toJSON());
+            }.bind(this);
+
+            this._channels.create({ ChannelName: name, ChannelProviderId: this._channels._providerId },
+                                  { wait: true, success: onSuccess });
         }
     });
 });

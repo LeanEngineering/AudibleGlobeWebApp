@@ -19,7 +19,7 @@ function (_, Backbone, React, Reflux)
 
             return (
                 React.DOM.div(null, 
-                    React.DOM.span(null, React.DOM.button( {onClick:this._onBackClicked}, "Back to all Providers")),
+
                     React.DOM.h2(null, "Channels for Provider ", this.props.providerId),
                     React.DOM.div(null, 
                         channels
@@ -29,10 +29,7 @@ function (_, Backbone, React, Reflux)
         },
 
         /* Private DOM Event Handlers */
-        _onBackClicked: function()
-        {
-            window.history.back();
-        },
+
 
         /* Private DOM Helpers */
 
