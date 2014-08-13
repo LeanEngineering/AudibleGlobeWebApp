@@ -19,23 +19,74 @@ function (_, Backbone, React, Reflux, ACTIONS, StoriesList, storiesStore)
         render: function()
         {
             return (
-                React.DOM.div(null, 
-                    React.DOM.h3(null, "Add New Story"),
-                    React.DOM.label( {htmlFor:"newStoryInput"}, "Story Name"),
-                    React.DOM.input( {name:"newStoryName", type:"text"}),
-                    React.DOM.label( {htmlFor:"newStoryDescription"}, "Story Description"),
-                    React.DOM.input( {name:"newStoryDescription", type:"text"}),
-                    React.DOM.label( {htmlFor:"newStoryFile"}, "Audio File"),
-                    React.DOM.input( {name:"newStoryFile", type:"file"}),
-                    React.DOM.button( {onClick:this._onGoClicked}, "GO")
+                React.DOM.form( {className:"form-horizontal"}, 
+                    React.DOM.fieldset(null, 
+                        React.DOM.legend(null, "New Story"),
+
+                        React.DOM.div( {className:"control-group"}, 
+                          React.DOM.label( {className:"control-label", htmlFor:"storyTitleInput"}, "Story Title"),
+                          React.DOM.div( {className:"controls"}, 
+                            React.DOM.input( {id:"storyTitleInput", name:"storyTitleInput", type:"text", placeholder:"Story Title", className:"input-xlarge", required:""})
+
+                          )
+                        ),
+
+                        React.DOM.div( {className:"control-group"}, 
+                          React.DOM.label( {className:"control-label", htmlFor:"storyDescriptionInput"}, "Story Description"),
+                          React.DOM.div( {className:"controls"}, 
+                            React.DOM.textarea( {id:"storyDescriptionInput", name:"storyDescriptionInput", defaultValue:"Description..."})
+                          )
+                        ),
+
+                        React.DOM.div( {className:"control-group"}, 
+                          React.DOM.label( {className:"control-label", htmlFor:"storyLatitudeInput"}, "Latitude"),
+                          React.DOM.div( {className:"controls"}, 
+                            React.DOM.input( {id:"storyLatitudeInput", name:"storyLatitudeInput", type:"text", placeholder:"Lat", className:"input-medium", required:""})
+
+                          )
+                        ),
+
+                        React.DOM.div( {className:"control-group"}, 
+                          React.DOM.label( {className:"control-label", htmlFor:"storyLongitudeInput"}, "Longitude"),
+                          React.DOM.div( {className:"controls"}, 
+                            React.DOM.input( {id:"storyLongitudeInput", name:"storyLongitudeInput", type:"text", placeholder:"Lon", className:"input-medium", required:""})
+
+                          )
+                        ),
+
+                        React.DOM.div( {className:"control-group"}, 
+                          React.DOM.label( {className:"control-label", htmlFor:"storyAudioFileInput"}, "Audio File"),
+                          React.DOM.div( {className:"controls"}, 
+                            React.DOM.input( {id:"storyAudioFileInput", name:"storyAudioFileInput", className:"input-file", type:"file"})
+                          )
+                        ),
+
+                        React.DOM.div( {className:"control-group"}, 
+                          React.DOM.label( {className:"control-label", htmlFor:"newStoryButton"}),
+                          React.DOM.div( {className:"controls"}, 
+                            React.DOM.button( {type:"button", name:"newStoryButton", className:"btn btn-primary", onClick:this._onGoClicked}, "Create New Story")
+                          )
+                        )
+                    )
                 )
             );
         },
 
         _onGoClicked: function()
         {
-            // $(this.getDOMNode()).find("input").val());
-            ACTIONS.addStory({});
+            // ;
+            var newStory =
+            {
+                StoryTitle: $(this.getDOMNode()).find("input[name='storyTitleInput']").val(),
+                StoryDescription: $(this.getDOMNode()).find("textarea[name='storyDescriptionInput']").val(),
+                StoryCoordinates:
+                {
+                    Latitude: $(this.getDOMNode()).find("input[name='storyLatitudeInput']").val(),
+                    Longitude: $(this.getDOMNode()).find("input[name='storyLongitudeInput']").val()
+                }
+            };
+
+            ACTIONS.addStory(newStory);
         }
     });
 
@@ -53,7 +104,7 @@ function (_, Backbone, React, Reflux, ACTIONS, StoriesList, storiesStore)
     {
         _setupStories: function(providerId, channelId)
         {
-            storiesStore.setChannel({ providerId: providerId, channelId: channelId });
+            storiesStore.setChannel(providerId, channelId);
             ACTIONS.getStories();
         },
 

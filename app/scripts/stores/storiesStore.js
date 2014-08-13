@@ -25,7 +25,7 @@ function (_, Backbone, React, Reflux, ACTIONS)
 
         url: function()
         {
-            return "http://127.0.0.1:81/providers/" + this._providerId + "/channels/" + this._channelId;
+            return "http://127.0.0.1:81/providers/" + this._providerId + "/channels/" + this._channelId + "/stories";
         }
     });
 
@@ -36,7 +36,7 @@ function (_, Backbone, React, Reflux, ACTIONS)
             this._stories = new StoriesCollection();
 
             this.listenTo(ACTIONS.getStories, this._onGetStories);
-            this.listenTo(ACTIONS.addStory, this._onAddStories);
+            this.listenTo(ACTIONS.addStory, this._onAddStory);
         },
 
         setChannel: function(providerId, channelId)
@@ -44,7 +44,7 @@ function (_, Backbone, React, Reflux, ACTIONS)
             this._stories.setChannel(providerId, channelId);
         },
 
-        _onGetChannels: function()
+        _onGetStories: function()
         {
             this._stories.fetch().done(function(data)
             {
@@ -52,14 +52,14 @@ function (_, Backbone, React, Reflux, ACTIONS)
             }.bind(this));
         },
 
-        _onAddChannel: function(name)
+        _onAddStory: function(story)
         {
             var onSuccess = function(data)
             {
                 this.trigger(this._stories.toJSON());
             }.bind(this);
 
-            this._stories.create({ },
+            this._stories.create(_.extend(story, { StoryChannelId: this._stories._channelId }),
                                  { wait: true, success: onSuccess });
         }
     });

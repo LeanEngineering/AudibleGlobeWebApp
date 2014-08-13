@@ -19,23 +19,74 @@ function (_, Backbone, React, Reflux, ACTIONS, StoriesList, storiesStore)
         render: function()
         {
             return (
-                <div>
-                    <h3>Add New Story</h3>
-                    <label htmlFor="newStoryInput">Story Name</label>
-                    <input name="newStoryName" type="text"></input>
-                    <label htmlFor="newStoryDescription">Story Description</label>
-                    <input name="newStoryDescription" type="text"></input>
-                    <label htmlFor="newStoryFile">Audio File</label>
-                    <input name="newStoryFile" type="file"></input>
-                    <button onClick={this._onGoClicked}>GO</button>
-                </div>
+                <form className="form-horizontal">
+                    <fieldset>
+                        <legend>New Story</legend>
+
+                        <div className="control-group">
+                          <label className="control-label" htmlFor="storyTitleInput">Story Title</label>
+                          <div className="controls">
+                            <input id="storyTitleInput" name="storyTitleInput" type="text" placeholder="Story Title" className="input-xlarge" required=""></input>
+
+                          </div>
+                        </div>
+
+                        <div className="control-group">
+                          <label className="control-label" htmlFor="storyDescriptionInput">Story Description</label>
+                          <div className="controls">
+                            <textarea id="storyDescriptionInput" name="storyDescriptionInput" defaultValue="Description..."></textarea>
+                          </div>
+                        </div>
+
+                        <div className="control-group">
+                          <label className="control-label" htmlFor="storyLatitudeInput">Latitude</label>
+                          <div className="controls">
+                            <input id="storyLatitudeInput" name="storyLatitudeInput" type="text" placeholder="Lat" className="input-medium" required=""></input>
+
+                          </div>
+                        </div>
+
+                        <div className="control-group">
+                          <label className="control-label" htmlFor="storyLongitudeInput">Longitude</label>
+                          <div className="controls">
+                            <input id="storyLongitudeInput" name="storyLongitudeInput" type="text" placeholder="Lon" className="input-medium" required=""></input>
+
+                          </div>
+                        </div>
+
+                        <div className="control-group">
+                          <label className="control-label" htmlFor="storyAudioFileInput">Audio File</label>
+                          <div className="controls">
+                            <input id="storyAudioFileInput" name="storyAudioFileInput" className="input-file" type="file"></input>
+                          </div>
+                        </div>
+
+                        <div className="control-group">
+                          <label className="control-label" htmlFor="newStoryButton"></label>
+                          <div className="controls">
+                            <button type="button" name="newStoryButton" className="btn btn-primary" onClick={this._onGoClicked}>Create New Story</button>
+                          </div>
+                        </div>
+                    </fieldset>
+                </form>
             );
         },
 
         _onGoClicked: function()
         {
-            // $(this.getDOMNode()).find("input").val());
-            ACTIONS.addStory({});
+            // ;
+            var newStory =
+            {
+                StoryTitle: $(this.getDOMNode()).find("input[name='storyTitleInput']").val(),
+                StoryDescription: $(this.getDOMNode()).find("textarea[name='storyDescriptionInput']").val(),
+                StoryCoordinates:
+                {
+                    Latitude: $(this.getDOMNode()).find("input[name='storyLatitudeInput']").val(),
+                    Longitude: $(this.getDOMNode()).find("input[name='storyLongitudeInput']").val()
+                }
+            };
+
+            ACTIONS.addStory(newStory);
         }
     });
 
@@ -53,7 +104,7 @@ function (_, Backbone, React, Reflux, ACTIONS, StoriesList, storiesStore)
     {
         _setupStories: function(providerId, channelId)
         {
-            storiesStore.setChannel({ providerId: providerId, channelId: channelId });
+            storiesStore.setChannel(providerId, channelId);
             ACTIONS.getStories();
         },
 

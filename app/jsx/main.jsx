@@ -5,22 +5,30 @@ require.config(
 	paths:
 	{
 		jquery: "../bower_components/jquery/dist/jquery",
+		bootstrap: "../bower_components/bootstrap/dist/js/bootstrap",
 		lodash: "../bower_components/lodash/dist/lodash",
 		underscore: "../bower_components/lodash/dist/lodash",
 		backbone: "../bower_components/backbone/backbone",
 		react: "../bower_components/react/react",
-		reflux: "../bower_components/reflux/dist/reflux.min"
+		reflux: "../bower_components/reflux/dist/reflux"
 	},
 	shim:
 	{
 		react:
 		{
 			exports: "React"
+		},
+		bootstrap:
+		{
+			deps:
+			[
+				"jquery"
+			]
 		}
 	}
 });
 
-require(["react", "app"],
+require(["react", "app", "bootstrap"],
 function (React, App)
 {
 	React.renderComponent(

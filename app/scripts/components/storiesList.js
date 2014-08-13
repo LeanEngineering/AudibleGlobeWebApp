@@ -31,7 +31,7 @@ function (_, Backbone, React, Reflux, ACTIONS)
         _createStoriesDom: function(story)
         {
             //var providerLink = "#providers/" + provider.ProviderId;
-            return React.DOM.li( {key:story.StoryId}, React.DOM.a( {href:""}, story.StoryName))
+            return React.DOM.li( {key:story.StoryId}, story.StoryTitle)
         }
     });
 });
