@@ -16,11 +16,6 @@ function (_, Backbone, React, Reflux, ACTIONS, ChannelsList, channelsStore)
 {
     var NewChannelInput = React.createClass(
     {displayName: 'NewChannelInput',
-        getInitialState: function()
-        {
-            return { channelName: "" };
-        },
-
         render: function()
         {
             return (
@@ -41,11 +36,6 @@ function (_, Backbone, React, Reflux, ACTIONS, ChannelsList, channelsStore)
 
     var ChannelCounter = React.createClass(
     {displayName: 'ChannelCounter',
-        getInitialState: function()
-        {
-            return { channels: [] };
-        },
-
         render: function()
         {
             return (
@@ -64,7 +54,7 @@ function (_, Backbone, React, Reflux, ACTIONS, ChannelsList, channelsStore)
 
         getInitialState: function()
         {
-            return { providerId: null, channels: []  }
+            return { channels: []  }
         },
 
         componentWillMount: function()
@@ -94,8 +84,8 @@ function (_, Backbone, React, Reflux, ACTIONS, ChannelsList, channelsStore)
             return (
                 React.DOM.div(null, 
                     React.DOM.span(null, React.DOM.button( {onClick:this._onBackClicked}, "Back to all Providers")),
-                    ChannelsList( {providerId:this.state.providerId, channels:this.state.channels} ),
-                    NewChannelInput( {onAdd:this._onAddNewChannel} ),
+                    ChannelsList( {providerId:this.props.providerId, channels:this.state.channels} ),
+                    NewChannelInput(null ),
                     ChannelCounter( {channels:this.state.channels} )
                 )
             );

@@ -10,6 +10,7 @@ define(
 
 	"components/providersList",
 	"components/channelsComponent",
+	"components/storiesComponent",
 
 	/* Stores */
 	"stores/providersStore"
@@ -21,6 +22,7 @@ function (_,
           ACTIONS,
           ProvidersList,
           ChannelsComponent,
+          StoriesComponent,
           providersStore)
 {
     var AppRouter = Backbone.Router.extend(
@@ -32,9 +34,15 @@ function (_,
 
         routes:
         {
+        	"providers/:providerId/channels/:channelId": "showStoriesForChannel",
             "providers/:providerId": "showChannelsForProvider",
             "providers": "showProviders",
             "": "showProviders"
+        },
+
+        showStoriesForChannel: function(providerId, channelId)
+        {
+        	this._controller.showStories(providerId, channelId);
         },
 
         showChannelsForProvider: function(providerId)
@@ -87,6 +95,11 @@ function (_,
 			this.setState({ route: "channels", providerId: providerId });
 		},
 
+		showStories: function(providerId, channelId)
+		{
+			this.setState({ route: "stories", providerId: providerId, channelId: channelId });
+		},
+
 		render: function()
 		{
 			if(this.state.route === "providers")
@@ -96,6 +109,10 @@ function (_,
 			else if(this.state.route === "channels")
 			{
 				route = ChannelsComponent( {providerId:this.state.providerId} )
+			}
+			else if(this.state.route === "stories")
+			{
+				route = StoriesComponent( {providerId:this.state.providerId, channelId:this.state.channelId} )
 			}
 
 			return (

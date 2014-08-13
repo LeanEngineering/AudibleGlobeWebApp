@@ -5,11 +5,23 @@ define(
 ],
 function (Reflux)
 {
-    return {
-        getProviders: Reflux.createAction(),
-        addProvider: Reflux.createAction(),
+    var actionNames =
+    [
+        "getProviders",
+        "addProvider",
 
-        getChannels: Reflux.createAction(),
-        addChannel: Reflux.createAction()
-    }
+        "getChannels",
+        "updateChannel",
+        "addChannel",
+
+        "getStories",
+        "updateStory",
+        "addStory"
+    ];
+
+    var actions = {};
+
+    actionNames.forEach(function(action) { actions[action] = Reflux.createAction(); });
+
+    return actions;
 });
