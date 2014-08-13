@@ -6,40 +6,19 @@ define(
     "react",
     "reflux",
 
-    "actions/actions",
-    "stores/providersStore"
+    "actions/actions"
 ],
-function (_, Backbone, React, Reflux, ACTIONS, providersStore)
+function (_, Backbone, React, Reflux, ACTIONS)
 {
     return React.createClass(
     {
-        getInitialState: function()
-        {
-            return { providers: [] }
-        },
-
-        componentWillMount: function()
-        {
-            this.unsubscribe = providersStore.listen(function(data)
-            {
-                this.setState({ providers: data });
-            }.bind(this));
-
-            ACTIONS.getProviders();
-        },
-
-        componentWillUnmount: function()
-        {
-            this.unsubscribe();
-        },
-
         render: function()
         {
-            var providers = _.map(this.state.providers, this._createProviderDom);
+            var providers = _.map(this.props.providers, this._createProviderDom);
 
             return (
                 React.DOM.div(null, 
-                    React.DOM.h2(null, "Workouts"),
+                    React.DOM.h2(null, "Providers"),
                     React.DOM.div(null, 
                         providers
                     )
@@ -52,7 +31,11 @@ function (_, Backbone, React, Reflux, ACTIONS, providersStore)
         _createProviderDom: function(provider)
         {
             var providerLink = "#providers/" + provider.ProviderId;
-            return React.DOM.li( {key:provider.ProviderId}, React.DOM.a( {href:providerLink}, provider.ProviderName))
+            return React.DOM.li( {key:provider.ProviderId, onClick:this._onClick}, React.DOM.a( {href:providerLink}, provider.ProviderName))
+        },
+
+        _onClick: function()
+        {
         }
     });
 });
