@@ -6,10 +6,9 @@ define(
     "react",
     "reflux",
 
-    "actions/actions",
-    "stores/channelsStore"
+    "actions/actions"
 ],
-function (_, Backbone, React, Reflux)
+function (_, Backbone, React, Reflux, ACTIONS)
 {
     return React.createClass(
     {
@@ -36,7 +35,12 @@ function (_, Backbone, React, Reflux)
         _createChannelDom: function(channel)
         {
             var channelLink = "#providers/" + channel.ChannelProviderId + "/channels/" + channel.ChannelId;
-            return React.DOM.li( {key:channel.ChannelId}, React.DOM.a( {href:channelLink}, channel.ChannelName))
+            return React.DOM.li( {key:channel.ChannelId}, React.DOM.a( {href:channelLink}, channel.ChannelName),React.DOM.span( {className:"glyphicon glyphicon-remove", onClick:this._onDeleteChannel.bind(this, channel.ChannelId)}))
+        },
+
+        _onDeleteChannel: function(channelId)
+        {
+            ACTIONS.deleteChannel(channelId);
         }
     });
 });

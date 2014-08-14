@@ -9,8 +9,15 @@ define(
 ],
 function (_, Backbone, React, Reflux, ACTIONS)
 {
+    var StoryModel = Backbone.Model.extend(
+    {
+        idAttribute: "StoryId"
+    });
+
     var StoriesCollection = Backbone.Collection.extend(
     {
+        model: StoryModel,
+
         initialize: function(options)
         {
             this._providerId = options ? options.providerId : null;
@@ -37,6 +44,7 @@ function (_, Backbone, React, Reflux, ACTIONS)
 
             this.listenTo(ACTIONS.getStories, this._onGetStories);
             this.listenTo(ACTIONS.addStory, this._onAddStory);
+            this.listenTo(ACTIONS.deleteStory, this._onDeleteStory);
         },
 
         setChannel: function(providerId, channelId)
@@ -61,6 +69,14 @@ function (_, Backbone, React, Reflux, ACTIONS)
 
             this._stories.create(_.extend(story, { StoryChannelId: this._stories._channelId }),
                                  { wait: true, success: onSuccess });
+        },
+
+        _onDeleteStory: function(storyId)
+        {
+            this._stories.get(storyId).destroy().always(function()
+            {
+                this.trigger(this._stories.toJSON());
+            }.bind(this));
         }
     });
 });

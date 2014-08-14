@@ -13,10 +13,12 @@ function (Reflux)
         "getChannels",
         "updateChannel",
         "addChannel",
+        "deleteChannel",
 
         "getStories",
         "updateStory",
-        "addStory"
+        "addStory",
+        "deleteStory"
     ];
 
     var actions = {};
