@@ -83,19 +83,11 @@ function (_, Backbone, React, Reflux, ACTIONS, ChannelsList, channelsStore)
         {
             return (
                 <div>
-                    <span><button onClick={this._onBackClicked}>Back to all Providers</button></span>
                     <ChannelsList providerId={this.props.providerId} channels={this.state.channels} />
                     <NewChannelInput />
                     <ChannelCounter channels={this.state.channels} />
                 </div>
             );
-        },
-
-        /* Private DOM Event Handlers */
-
-        _onBackClicked: function()
-        {
-            window.history.back();
         }
     });
 });

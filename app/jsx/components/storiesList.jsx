@@ -18,10 +18,10 @@ function (_, Backbone, React, Reflux, ACTIONS)
 
             return (
                 <div>
-                    <h2>Stories for Channel {this.props.channelId}</h2>
-                    <div>
+                    <h2>Stories</h2>
+                    <ul>
                         {stories}
-                    </div>
+                    </ul>
                 </div>
             )
         },

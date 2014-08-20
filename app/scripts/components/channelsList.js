@@ -19,8 +19,8 @@ function (_, Backbone, React, Reflux, ACTIONS)
             return (
                 React.DOM.div(null, 
 
-                    React.DOM.h2(null, "Channels for Provider ", this.props.providerId),
-                    React.DOM.div(null, 
+                    React.DOM.h2(null, "Channels"),
+                    React.DOM.ul(null, 
                         channels
                     )
                 )

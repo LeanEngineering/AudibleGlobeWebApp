@@ -83,19 +83,11 @@ function (_, Backbone, React, Reflux, ACTIONS, ChannelsList, channelsStore)
         {
             return (
                 React.DOM.div(null, 
-                    React.DOM.span(null, React.DOM.button( {onClick:this._onBackClicked}, "Back to all Providers")),
                     ChannelsList( {providerId:this.props.providerId, channels:this.state.channels} ),
                     NewChannelInput(null ),
                     ChannelCounter( {channels:this.state.channels} )
                 )
             );
-        },
-
-        /* Private DOM Event Handlers */
-
-        _onBackClicked: function()
-        {
-            window.history.back();
         }
     });
 });

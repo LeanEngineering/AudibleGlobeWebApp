@@ -115,20 +115,61 @@ function (_,
 		{
 			if(this.state.route === "providers")
 			{
-				route = ProvidersList( {providers:this.state.providers} );
 			}
 			else if(this.state.route === "channels")
 			{
-				route = ChannelsComponent( {providerId:this.state.providerId} )
 			}	
 			else if(this.state.route === "stories")
 			{
-				route = StoriesComponent( {providerId:this.state.providerId, channelId:this.state.channelId, storyId:this.state.storyId} )
 			}
 
 			return (
-				React.DOM.div( {className:"container-fluid"}, 
-					route
+				React.DOM.div(null, 
+					React.DOM.div( {className:"navbar navbar-inverse navbar-fixed-top", role:"navigation"}, 
+				      React.DOM.div( {className:"container-fluid"}, 
+				        React.DOM.div( {className:"navbar-header"}, 
+				          React.DOM.button( {type:"button", className:"navbar-toggle", 'data-toggle':"collapse", 'data-target':".navbar-collapse"}, 
+				            React.DOM.span( {className:"sr-only"}, "Toggle navigation"),
+				            React.DOM.span( {className:"icon-bar"}),
+				            React.DOM.span( {className:"icon-bar"}),
+				            React.DOM.span( {className:"icon-bar"})
+				          ),
+				          React.DOM.a( {className:"navbar-brand", href:"#"}, "Audible Globe")
+				        ),
+				        React.DOM.div( {className:"navbar-collapse collapse"}, 
+				          React.DOM.ul( {className:"nav navbar-nav navbar-right"}, 
+				            React.DOM.li(null, React.DOM.a( {href:"#"}, "Dashboard")),
+				            React.DOM.li(null, React.DOM.a( {href:"#"}, "Settings")),
+				            React.DOM.li(null, React.DOM.a( {href:"#"}, "Profile")),
+				            React.DOM.li(null, React.DOM.a( {href:"#"}, "Help"))
+				          ),
+				          React.DOM.form( {className:"navbar-form navbar-right"}, 
+				            React.DOM.input( {type:"text", className:"form-control", placeholder:"Search..."})
+				          )
+				        )
+				      )
+				    ),
+
+				    React.DOM.div( {className:"container-fluid"}, 
+				    	React.DOM.div( {className:"row"}, 
+				    		React.DOM.div( {className:"col-md-2"}, 
+				    			ProvidersList( {providers:this.state.providers, selected:this.state.providerId} ),"; "
+					        ),
+
+				       		React.DOM.div( {className:"col-md-2"}, 
+				       			ChannelsComponent( {providerId:this.state.providerId} )
+				       		),
+
+					        React.DOM.div( {className:"col-md-8"}, 
+					        	StoriesComponent( {providerId:this.state.providerId, channelId:this.state.channelId, storyId:this.state.storyId} )
+							)
+
+						)
+					),
+
+					React.DOM.footer(null, 
+						React.DOM.div( {className:"container"}, "Copyright 2014")
+					)
 				)
 			);
 		}

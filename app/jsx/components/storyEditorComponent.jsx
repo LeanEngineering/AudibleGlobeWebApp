@@ -104,13 +104,6 @@ function (_, Backbone, React, Reflux, ACTIONS, storiesStore, L)
 
         _onGoClicked: function()
         {
-        	/*
-                StoryTitle: $(this.getDOMNode()).find("input[name='storyTitleInput']").val(),
-                StoryDescription: $(this.getDOMNode()).find("textarea[name='storyDescriptionInput']").val(),
-                Latitude: $(this.getDOMNode()).find("input[name='storyLatitudeInput']").val(),
-                Longitude: $(this.getDOMNode()).find("input[name='storyLongitudeInput']").val()
-			*/
-
             if(this.state.StoryId === null)
         	{
             	ACTIONS.addStory(this.state);

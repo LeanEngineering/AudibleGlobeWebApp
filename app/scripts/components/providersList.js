@@ -19,14 +19,12 @@ function (_, Backbone, React, Reflux, ACTIONS)
             return (
                 React.DOM.div(null, 
                     React.DOM.h2(null, "Providers"),
-                    React.DOM.div(null, 
+                    React.DOM.ul(null, 
                         providers
                     )
                 )
             )
         },
-
-        /* Private Helpers */
 
         _createProviderDom: function(provider)
         {

@@ -56,18 +56,11 @@ function (_, Backbone, React, Reflux, ACTIONS, StoriesList, StoryEditor, stories
 
             return (
                 React.DOM.div(null, 
-                    React.DOM.span(null, React.DOM.button( {onClick:this._onBackClicked}, "Back")),
                     selectedStory ? "" : StoriesList( {stories:this.state.stories} ),
                     React.DOM.h3(null, selectedStory ? "Edit Story" : "New Story"),
                     StoryEditor( {story:selectedStory} )
                 )
             );
-        },
-
-        /* Private DOM Event Handlers */
-        _onBackClicked: function()
-        {
-            window.history.back();
         }
     });
 });

@@ -19,10 +19,10 @@ function (_, Backbone, React, Reflux, ACTIONS)
             return (
                 <div>
 
-                    <h2>Channels for Provider {this.props.providerId}</h2>
-                    <div>
+                    <h2>Channels</h2>
+                    <ul>
                         {channels}
-                    </div>
+                    </ul>
                 </div>
             )
         },
