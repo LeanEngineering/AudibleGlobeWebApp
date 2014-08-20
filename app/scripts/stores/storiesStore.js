@@ -32,7 +32,7 @@ function (_, Backbone, React, Reflux, ACTIONS)
 
         url: function()
         {
-            return "http://127.0.0.1:81/providers/" + this._providerId + "/channels/" + this._channelId + "/stories";
+            return "http://127.0.0.1/providers/" + this._providerId + "/channels/" + this._channelId + "/stories";
         }
     });
 
@@ -45,6 +45,7 @@ function (_, Backbone, React, Reflux, ACTIONS)
             this.listenTo(ACTIONS.getStories, this._onGetStories);
             this.listenTo(ACTIONS.addStory, this._onAddStory);
             this.listenTo(ACTIONS.deleteStory, this._onDeleteStory);
+            this.listenTo(ACTIONS.updateStory, this._onUpdateStory);
         },
 
         setChannel: function(providerId, channelId)
@@ -77,6 +78,24 @@ function (_, Backbone, React, Reflux, ACTIONS)
             {
                 this.trigger(this._stories.toJSON());
             }.bind(this));
+        },
+
+        _onUpdateStory: function(story)
+        {
+           var onSuccess = function(data)
+            {
+                this.trigger(this._stories.toJSON());
+            }.bind(this);
+            
+            var existingStory = this._stories.get(story.StoryId);
+
+            if(!existingStory)
+            {
+                throw new Error("No matching story found in collection.");
+            }
+
+            existingStory.attributes = _.merge(existingStory.attributes, story);
+            existingStory.save().done(onSuccess);
         }
     });
 });

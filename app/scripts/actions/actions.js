@@ -18,7 +18,8 @@ function (Reflux)
         "getStories",
         "updateStory",
         "addStory",
-        "deleteStory"
+        "deleteStory",
+        "updateStory"
     ];
 
     var actions = {};

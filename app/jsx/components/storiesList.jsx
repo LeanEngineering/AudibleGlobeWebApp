@@ -30,8 +30,8 @@ function (_, Backbone, React, Reflux, ACTIONS)
 
         _createStoriesDom: function(story)
         {
-            //var providerLink = "#providers/" + provider.ProviderId;
-            return <li key={story.StoryId}>{story.StoryTitle}<span className="glyphicon glyphicon-remove" onClick={this._onDeleteStory.bind(this, story.StoryId)}></span></li>
+            var storyLink = window.location + "/stories/" + story.StoryId;
+            return <li key={story.StoryId}><a href={storyLink}>{story.StoryTitle}</a><span className="glyphicon glyphicon-remove" onClick={this._onDeleteStory.bind(this, story.StoryId)}></span></li>
         },
 
         _onDeleteStory: function(storyId)

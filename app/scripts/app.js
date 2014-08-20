@@ -34,20 +34,26 @@ function (_,
 
         routes:
         {
+        	"providers/:providerId/channels/:channelId/stories/:storiesId": "editStory",
         	"providers/:providerId/channels/:channelId": "showStoriesForChannel",
             "providers/:providerId": "showChannelsForProvider",
             "providers": "showProviders",
             "": "showProviders"
         },
 
+        editStory: function(providerId, channelId, storyId)
+        {
+        	this._controller.editStory(parseInt(providerId, 10), parseInt(channelId, 10), parseInt(storyId, 10));
+        },
+
         showStoriesForChannel: function(providerId, channelId)
         {
-        	this._controller.showStories(providerId, channelId);
+        	this._controller.showStories(parseInt(providerId, 10), parseInt(channelId, 10));
         },
 
         showChannelsForProvider: function(providerId)
         {
-            this._controller.showChannels(providerId);
+            this._controller.showChannels(parseInt(providerId, 10));
         },
 
         showProviders: function()
@@ -97,7 +103,12 @@ function (_,
 
 		showStories: function(providerId, channelId)
 		{
-			this.setState({ route: "stories", providerId: providerId, channelId: channelId });
+			this.setState({ route: "stories", providerId: providerId, channelId: channelId, storyId: null });
+		},
+
+		editStory: function(providerId, channelId, storyId)
+		{
+			this.setState({ route: "stories", providerId: providerId, channelId: channelId, storyId: storyId });
 		},
 
 		render: function()
@@ -109,14 +120,14 @@ function (_,
 			else if(this.state.route === "channels")
 			{
 				route = ChannelsComponent( {providerId:this.state.providerId} )
-			}
+			}	
 			else if(this.state.route === "stories")
 			{
-				route = StoriesComponent( {providerId:this.state.providerId, channelId:this.state.channelId} )
+				route = StoriesComponent( {providerId:this.state.providerId, channelId:this.state.channelId, storyId:this.state.storyId} )
 			}
 
 			return (
-				React.DOM.div(null, 
+				React.DOM.div( {className:"container-fluid"}, 
 					route
 				)
 			);

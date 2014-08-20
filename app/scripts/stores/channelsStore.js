@@ -30,7 +30,7 @@ function (_, Backbone, React, Reflux, ACTIONS)
 
         url: function()
         {
-            return "http://127.0.0.1:81/providers/" + this._providerId + "/channels";
+            return "http://127.0.0.1/providers/" + this._providerId + "/channels";
         }
     });
 
@@ -43,6 +43,11 @@ function (_, Backbone, React, Reflux, ACTIONS)
             this.listenTo(ACTIONS.getChannels, this._onGetChannels);
             this.listenTo(ACTIONS.addChannel, this._onAddChannel);
             this.listenTo(ACTIONS.deleteChannel, this._onDeleteChannel);
+        },
+
+        getState: function()
+        {
+            return this._channels.toJSON();
         },
 
         setProviderId: function(providerId)
