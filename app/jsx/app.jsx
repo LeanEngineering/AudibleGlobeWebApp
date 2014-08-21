@@ -62,7 +62,7 @@ function (_,
         }
     });
 
-	var AppControllerComponent = React.createClass(
+	return React.createClass(
 	{
 		getInitialState: function()
 		{
@@ -80,8 +80,6 @@ function (_,
             {
                 this.setState({ providers: data });
             }.bind(this)).bind(this));
-
-			ACTIONS.getProviders();
 		},
 
 		componentWillUnmount: function()
@@ -174,6 +172,4 @@ function (_,
 			);
 		}
 	});
-
-	return AppControllerComponent;
 });

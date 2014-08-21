@@ -11,10 +11,25 @@ define(
     "components/storiesList",
     "components/storyEditorComponent",
 
-    "stores/storiesStore"
+    "stores/storiesStore",
+
+    "leaflet"
 ],
-function (_, Backbone, React, Reflux, ACTIONS, StoriesList, StoryEditor, storiesStore)
+function (_, Backbone, React, Reflux, ACTIONS, StoriesList, StoryEditor, storiesStore, L)
 {
+    var Map = React.createClass(
+    {displayName: 'Map',
+        componentDidMount: function()
+        {
+            L.Map(this.getDOMNode());
+        },
+
+        render: function()
+        {
+            return React.DOM.div(null)
+        }
+    });
+
     return React.createClass(
     {
         _setupStories: function(providerId, channelId)
@@ -57,8 +72,19 @@ function (_, Backbone, React, Reflux, ACTIONS, StoriesList, StoryEditor, stories
             return (
                 React.DOM.div(null, 
                     selectedStory ? "" : StoriesList( {stories:this.state.stories} ),
-                    React.DOM.h3(null, selectedStory ? "Edit Story" : "New Story"),
-                    StoryEditor( {story:selectedStory} )
+                    React.DOM.div( {className:"row"}, 
+                        React.DOM.div( {className:"col-md-4"}, 
+                            React.DOM.h3(null, selectedStory ? "Edit Story" : "New Story")
+                        )
+                    ),
+                    React.DOM.div( {className:"row"}, 
+                        React.DOM.div( {className:"col-md-2"}, 
+                            StoryEditor( {story:selectedStory} )
+                        ),
+                        React.DOM.div( {className:"col-md-2"}, 
+                            Map( {story:selectedStory, className:"col-md-2 storyMapContainer"} )
+                        )
+                    )
                 )
             );
         }

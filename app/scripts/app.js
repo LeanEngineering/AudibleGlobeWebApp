@@ -62,8 +62,8 @@ function (_,
         }
     });
 
-	var AppControllerComponent = React.createClass(
-	{displayName: 'AppControllerComponent',
+	return React.createClass(
+	{
 		getInitialState: function()
 		{
 			return { route: { name: "providers", options: null } };
@@ -80,8 +80,6 @@ function (_,
             {
                 this.setState({ providers: data });
             }.bind(this)).bind(this));
-
-			ACTIONS.getProviders();
 		},
 
 		componentWillUnmount: function()
@@ -174,6 +172,4 @@ function (_,
 			);
 		}
 	});
-
-	return AppControllerComponent;
 });

@@ -22,9 +22,6 @@ function (Reflux)
         "updateStory"
     ];
 
-    var actions = {};
-
-    actionNames.forEach(function(action) { actions[action] = Reflux.createAction(); });
-
-    return actions;
+    return Reflux.createActions(actionNames);
 });
+
