@@ -10,7 +10,9 @@ require.config(
 		underscore: "../bower_components/lodash/dist/lodash",
 		backbone: "../bower_components/backbone/backbone",
 		react: "../bower_components/react/react-with-addons",
+		"react.router": "../bower_components/react-router/dist/react-router",
 		reflux: "../bower_components/reflux/dist/reflux",
+
 		leaflet: "../bower_components/leaflet/dist/leaflet-src"
 	},
 	shim:
@@ -26,18 +28,23 @@ require.config(
 				"jquery"
 			]
 		},
-		leaflet:
+		"react.router":
 		{
-			exports: "L"
+			deps:
+			[
+				"react"
+			],
+			exports: "ReactRouter"
 		}
 	}
 });
 
-require(["react", "app", "bootstrap"],
-function (React, App)
+require(["react", "bootstrap"],
+function (React)
 {
-	React.renderComponent(
-		App(null ),
-		document.getElementById("app")
-	);
+	window.React = React;
+
+	require([ "router", "app" ], function(Routes, App)
+	{
+	});
 });

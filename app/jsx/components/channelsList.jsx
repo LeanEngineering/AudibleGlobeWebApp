@@ -18,7 +18,6 @@ function (_, Backbone, React, Reflux, ACTIONS)
 
             return (
                 <div>
-
                     <h2>Channels</h2>
                     <ul>
                         {channels}

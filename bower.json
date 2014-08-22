@@ -11,7 +11,8 @@
     "lodash": "~2.4.1",
     "bootstrap": "~3.2.0",
     "reflux": "~0.1.6",
-    "leaflet": "~0.7.3"
+    "leaflet": "~0.7.3",
+    "react-router": "~0.5.2"
   },
   "devDependencies": {}
 }

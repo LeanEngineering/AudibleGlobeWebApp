@@ -34,16 +34,6 @@ function (_, Backbone, React, Reflux, ACTIONS, ChannelsList, channelsStore)
         }
     });
 
-    var ChannelCounter = React.createClass(
-    {displayName: 'ChannelCounter',
-        render: function()
-        {
-            return (
-                React.DOM.span(null, "Number of Channels: ", this.props.channels.length)
-            );
-        }
-    });
-
     return React.createClass(
     {
         _setupChannels: function(providerId)
@@ -84,8 +74,7 @@ function (_, Backbone, React, Reflux, ACTIONS, ChannelsList, channelsStore)
             return (
                 React.DOM.div(null, 
                     ChannelsList( {providerId:this.props.providerId, channels:this.state.channels} ),
-                    NewChannelInput(null ),
-                    ChannelCounter( {channels:this.state.channels} )
+                    NewChannelInput(null )
                 )
             );
         }
