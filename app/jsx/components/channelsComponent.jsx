@@ -6,31 +6,49 @@ define(
     "react",
     "reflux",
 
-    "actions/actions",
+    "actions/channelActions",
 
     "components/channelsList",
 
     "stores/channelsStore"
 ],
-function (_, Backbone, React, Reflux, ACTIONS, ChannelsList, channelsStore)
+function (_, Backbone, React, Reflux, CHANNEL_ACTIONS, ChannelsList, channelsStore)
 {
-    var NewChannelInput = React.createClass(
+    var ChannelsEditor = React.createClass(
     {
+        mixins: [React.addons.LinkedStateMixin],
+
+        getInitialState: function()
+        {
+            return { ChannelId: null, ChannelName: "", ChannelProviderId: null };
+        },
+
         render: function()
         {
+            var header = this.props.channelId === "new" ? <h3>NewChannel</h3> : <h3>Edit Channel</h3>;
+
             return (
                 <div>
-                    <h3>Add New Channel</h3>
-                    <input id="newChannelInput" type="text"></input>
-                    <label htmlFor="newChannelInput">Channel Name</label>
+                    {header}
+                    <label htmlFor="newChannelInput" valueLink={this.linkState("ChannelName")}>Channel Name</label>
+                    <input id="newChannelInput" type="text" value></input>
                     <button onClick={this._onGoClicked}>GO</button>
                 </div>
             );
         },
 
+        _isNewChannel: function() { return this.props.channelId === "new"; },
+
         _onGoClicked: function()
         {
-            ACTIONS.addChannel($(this.getDOMNode()).find("input").val());
+            if(this._isNewChannel())
+            {
+                CHANNEL_ACTIONS.addChannel(this.state);
+            }
+            else
+            {
+                CHANNEL_ACTIONS.editChannel(this.state);
+            }
         }
     });
 
@@ -72,10 +90,10 @@ function (_, Backbone, React, Reflux, ACTIONS, ChannelsList, channelsStore)
         render: function()
         {
             return (
-                <div>
-                    <ChannelsList providerId={this.props.providerId} channels={this.state.channels} />
-                    <NewChannelInput />
-                </div>
+                <Routes>
+                    <Route handler={ChannelsList} />
+                    <Route path="/providers/:providerId/channels/:channelId/editor" handler={ChannelsEditor} />
+                </Routes>
             );
         }
     });

@@ -12,6 +12,7 @@ require.config(
 		react: "../bower_components/react/react-with-addons",
 		"react.router": "../bower_components/react-router/dist/react-router",
 		reflux: "../bower_components/reflux/dist/reflux",
+		superagent: "../bower_components/superagent/superagent",
 
 		leaflet: "../bower_components/leaflet/dist/leaflet-src"
 	},
