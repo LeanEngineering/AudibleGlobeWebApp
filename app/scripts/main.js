@@ -11,6 +11,7 @@ require.config(
 		backbone: "../bower_components/backbone/backbone",
 		react: "../bower_components/react/react-with-addons",
 		reflux: "../bower_components/reflux/dist/reflux",
+
 		leaflet: "../bower_components/leaflet/dist/leaflet-src"
 	},
 	shim:
@@ -25,10 +26,6 @@ require.config(
 			[
 				"jquery"
 			]
-		},
-		leaflet:
-		{
-			exports: "L"
 		}
 	}
 });

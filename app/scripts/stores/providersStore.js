@@ -11,7 +11,7 @@ function (_, Backbone, React, Reflux, ACTIONS)
 {
     var ProvidersCollection = Backbone.Collection.extend(
     {
-        url: "http://127.0.0.1/providers"
+        url: "http://5a9107ddfcef4c5187c5df19c47d4639.cloudapp.net/providers"
     });
 
     return Reflux.createStore(

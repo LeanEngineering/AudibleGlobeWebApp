@@ -32,7 +32,7 @@ function (_, Backbone, React, Reflux, ACTIONS)
 
         url: function()
         {
-            return "http://127.0.0.1/providers/" + this._providerId + "/channels/" + this._channelId + "/stories";
+            return "http://5a9107ddfcef4c5187c5df19c47d4639.cloudapp.net/providers/" + this._providerId + "/channels/" + this._channelId + "/stories";
         }
     });
 
