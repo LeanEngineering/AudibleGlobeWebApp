@@ -12,7 +12,7 @@ define(
 
     "leaflet"
 ],
-function (_, Backbone, React, Reflux, ACTIONS_Stories, storiesStore, L)
+function (_, Backbone, React, Reflux, ACTIONS_Stories, storiesStore)
 {
 	return React.createClass(
     {
@@ -92,8 +92,6 @@ function (_, Backbone, React, Reflux, ACTIONS_Stories, storiesStore, L)
 	                          )
 	                        )
 	                    )
-	                ),
-	                React.DOM.div( {className:"storyEditorMapContainer"}
 	                )
                 )
             );
@@ -103,11 +101,11 @@ function (_, Backbone, React, Reflux, ACTIONS_Stories, storiesStore, L)
         {
             if(this.state.StoryId === null)
         	{
-            	ACTIONS.addStory(this.state);
+            	ACTIONS_Stories.addStory(this.state);
             }
             else
             {
-            	ACTIONS.updateStory(this.state);
+            	ACTIONS_Stories.updateStory({ providerId: this.props.providerId, channelId: this.props.channelId, story: this.state });
             }
         }
     });

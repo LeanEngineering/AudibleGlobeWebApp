@@ -76,7 +76,7 @@ function (_, Backbone, React, Reflux, ACTIONS_Stories, StoriesList, StoryEditor,
                     <div>
                         <div className="col-md-4">
                             <h3>Edit Story</h3>
-                            <StoryEditor story={selectedStory} />
+                            <StoryEditor story={selectedStory} providerId={this.props.params.providerId} channelId={this.props.params.channelId} />
                         </div>
                         <div className="col-md-4">
                             <StoryMap story={selectedStory} />
