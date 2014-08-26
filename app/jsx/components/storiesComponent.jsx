@@ -6,7 +6,7 @@ define(
     "react",
     "reflux",
 
-    "actions/actions",
+    "actions/storiesActions",
 
     "components/storiesList",
     "components/storyEditorComponent",
@@ -15,29 +15,23 @@ define(
 
     "leaflet"
 ],
-function (_, Backbone, React, Reflux, ACTIONS, StoriesList, StoryEditor, storiesStore, L)
+function (_, Backbone, React, Reflux, ACTIONS_Stories, StoriesList, StoryEditor, storiesStore, L)
 {
-    var Map = React.createClass(
+    var StoryMap = React.createClass(
     {
-        componentDidMount: function()
+        componentWillMount: function()
         {
-            L.Map(this.getDOMNode());
+            // L.map(this.getDOMNode());
         },
 
         render: function()
         {
-            return <div></div>
+            return null;
         }
     });
 
     return React.createClass(
     {
-        _setupStories: function(providerId, channelId)
-        {
-            storiesStore.setChannel(providerId, channelId);
-            ACTIONS.getStories();
-        },
-
         getInitialState: function()
         {
             return { stories: []  }
@@ -47,17 +41,14 @@ function (_, Backbone, React, Reflux, ACTIONS, StoriesList, StoryEditor, stories
         {
             this.unsubscribe = [];
 
-            this.unsubscribe.push(storiesStore.listen(function(data)
-            {
-                this.setState({ stories: data });
-            }.bind(this)).bind(this));
+            this.unsubscribe.push(storiesStore.listen(this._updateStateFromStore));
 
-            this._setupStories(this.props.providerId, this.props.channelId);
+            ACTIONS_Stories.loadStories({ providerId: this.props.params.providerId, channelId: this.props.params.channelId });
         },
 
         componentWillReceiveProps: function(nextProps)
         {
-            this._setupStories(nextProps.providerId, nextProps.channelId);
+            ACTIONS_Stories.loadStories({ providerId: nextProps.params.providerId, channelId: nextProps.params.channelId });
         },
 
         componentWillUnmount: function()
@@ -65,25 +56,57 @@ function (_, Backbone, React, Reflux, ACTIONS, StoriesList, StoryEditor, stories
             this.unsubscribe.forEach(function(fn) { fn(); });
         },
 
+        _updateStateFromStore: function(storeState)
+        {
+            if(storeState.valid)
+            {
+                this.setState({ stories: storeState.data.stories });
+            }
+        },
+
         render: function()
         {
-            var selectedStory = _(this.state.stories).find({ StoryId: this.props.storyId });
+            var components = "";
+
+            if(this.props.action === "edit")
+            {
+                var selectedStory = _(this.state.stories).find({ StoryId: parseInt(this.props.params.storyId, 10) });
+                components =
+                (
+                    <div>
+                        <div className="col-md-4">
+                            <h3>Edit Story</h3>
+                            <StoryEditor story={selectedStory} />
+                        </div>
+                        <div className="col-md-4">
+                            <StoryMap story={selectedStory} />
+                        </div>
+                    </div>
+                );
+            }
+            else if(this.props.action === "new")
+            {
+                components =
+                (
+                    <div>
+                        <div className="col-md-4">
+                            <h3>Create New Story</h3>
+                            <StoryEditor story={null} />
+                        </div>
+                        <div className="col-md-4">
+                            <StoryMap story={null} />
+                        </div>
+                    </div>
+                );
+            }
 
             return (
                 <div>
-                    {selectedStory ? "" : <StoriesList stories={this.state.stories} />}
-                    <div className="row">
-                        <div className="col-md-4">
-                            <h3>{selectedStory ? "Edit Story" : "New Story"}</h3>
-                        </div>
-                    </div>
                     <div className="row">
                         <div className="col-md-2">
-                            <StoryEditor story={selectedStory} />
+                            <StoriesList stories={this.state.stories} providerId={this.props.params.providerId} channelId={this.props.params.channelId} />
                         </div>
-                        <div className="col-md-2">
-                            <Map story={selectedStory} className="col-md-2 storyMapContainer" />
-                        </div>
+                        {components}
                     </div>
                 </div>
             );

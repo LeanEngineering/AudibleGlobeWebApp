@@ -6,13 +6,13 @@ define(
     "react",
     "reflux",
 
-    "actions/actions",
+    "actions/storiesActions",
 
     "stores/storiesStore",
 
     "leaflet"
 ],
-function (_, Backbone, React, Reflux, ACTIONS, storiesStore, L)
+function (_, Backbone, React, Reflux, ACTIONS_Stories, storiesStore, L)
 {
 	return React.createClass(
     {
@@ -21,11 +21,11 @@ function (_, Backbone, React, Reflux, ACTIONS, storiesStore, L)
     	getInitialState: function()
     	{
     		return {
-	    			StoryTitle: "",
-	    			StoryDescription: "",
-	    			StoryChannelId: null,
-	    			Latitude: null,
-	    			Longitude: null
+    			StoryTitle: "",
+    			StoryDescription: "",
+    			StoryChannelId: null,
+    			Latitude: null,
+    			Longitude: null
     		}
     	},
 
@@ -54,7 +54,6 @@ function (_, Backbone, React, Reflux, ACTIONS, storiesStore, L)
 	                          React.DOM.label( {className:"control-label", htmlFor:"storyTitleInput"}, "Story Title"),
 	                          React.DOM.div( {className:"controls"}, 
 	                            React.DOM.input( {id:"storyTitleInput", name:"storyTitleInput", type:"text", placeholder:"Story Title", className:"input-xlarge", required:"", valueLink:this.linkState("StoryTitle")})
-
 	                          )
 	                        ),
 
@@ -69,7 +68,6 @@ function (_, Backbone, React, Reflux, ACTIONS, storiesStore, L)
 	                          React.DOM.label( {className:"control-label", htmlFor:"storyLatitudeInput"}, "Latitude"),
 	                          React.DOM.div( {className:"controls"}, 
 	                            React.DOM.input( {id:"storyLatitudeInput", name:"storyLatitudeInput", type:"text", placeholder:"Lat", className:"input-medium", required:"", valueLink:this.linkState("Latitude")})
-
 	                          )
 	                        ),
 
@@ -77,7 +75,6 @@ function (_, Backbone, React, Reflux, ACTIONS, storiesStore, L)
 	                          React.DOM.label( {className:"control-label", htmlFor:"storyLongitudeInput"}, "Longitude"),
 	                          React.DOM.div( {className:"controls"}, 
 	                            React.DOM.input( {id:"storyLongitudeInput", name:"storyLongitudeInput", type:"text", placeholder:"Lon", className:"input-medi/*um", required:"", valueLink:this.linkState("Longitude")})
-
 	                          )
 	                        ),
 

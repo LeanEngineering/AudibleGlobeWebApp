@@ -7,15 +7,10 @@ function (Reflux)
 {
     var actionNames =
     [
-        "getProviders",
-        "addProvider",
-
-        "getChannels",
-        "updateChannel",
-        "addChannel",
-        "deleteChannel",
-
-        "getStories",
+        "loadStories",
+        "loadStories_Api_Success",
+        "loadStories_Api_Failure",
+        
         "updateStory",
         "addStory",
         "deleteStory",

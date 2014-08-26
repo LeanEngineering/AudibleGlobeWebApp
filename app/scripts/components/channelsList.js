@@ -6,40 +6,36 @@ define(
     "react",
     "reflux",
 
-    "actions/actions"
+    "actions/channelsActions"
 ],
-function (_, Backbone, React, Reflux, ACTIONS)
+function (_, Backbone, React, Reflux, ACTIONS_Channels)
 {
     return React.createClass(
     {
+        componentWillReceiveProps: function(nextProps)
+        {
+            console.log(nextProps);
+        },
+
         render: function()
         {
             var channels = _.map(this.props.channels, this._createChannelDom);
 
             return (
-                React.DOM.div(null, 
-                    React.DOM.h2(null, "Channels"),
-                    React.DOM.ul(null, 
-                        channels
-                    )
+                React.DOM.ul(null, 
+                    channels
                 )
             )
         },
 
-        /* Private DOM Event Handlers */
-
-
-        /* Private DOM Helpers */
-
         _createChannelDom: function(channel)
         {
-            var channelLink = "#providers/" + channel.ChannelProviderId + "/channels/" + channel.ChannelId;
+            var channelLink = "#/providers/" + channel.ChannelProviderId + "/channels/" + channel.ChannelId + "/stories";
             return React.DOM.li( {key:channel.ChannelId}, React.DOM.a( {href:channelLink}, channel.ChannelName),React.DOM.span( {className:"glyphicon glyphicon-remove", onClick:this._onDeleteChannel.bind(this, channel.ChannelId)}))
         },
 
         _onDeleteChannel: function(channelId)
         {
-            ACTIONS.deleteChannel(channelId);
         }
     });
 });

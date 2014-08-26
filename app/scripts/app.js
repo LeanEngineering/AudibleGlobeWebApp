@@ -5,11 +5,12 @@ define(
 	"react",
 	"reflux",
 
-	"actions/actions",
+	"actions/providersActions",
 
 	"components/providersList",
 	"components/channelsComponent",
 	"components/storiesComponent",
+	"components/storiesExplorer",
 
 	"stores/providersStore",
 
@@ -18,10 +19,11 @@ define(
 function (_,
           React,
           Reflux,
-          ACTIONS,
+          ACTIONS_Providers,
           ProvidersList,
           ChannelsComponent,
           StoriesComponent,
+          StoriesExplorer,
           providersStore,
           ReactRouter)
 {
@@ -30,26 +32,6 @@ function (_,
 
 	var App = React.createClass(
 	{displayName: 'App',
-		getInitialState: function()
-		{
-			return { };
-		},
-
-		componentWillMount: function()
-		{
-			this.unsubscribe = [];
-
-            this.unsubscribe.push(providersStore.listen(function(data)
-            {
-                this.setState({ providers: data });
-            }.bind(this)).bind(this));
-		},
-
-		componentWillUnmount: function()
-		{
-			this.unsubscribe.forEach(function(fn) { fn(); });
-		},
-
 		render: function()
 		{
 			return (
@@ -67,10 +49,9 @@ function (_,
 				        ),
 				        React.DOM.div( {className:"navbar-collapse collapse"}, 
 				          React.DOM.ul( {className:"nav navbar-nav navbar-right"}, 
-				            React.DOM.li(null, React.DOM.a( {href:"#"}, "Dashboard")),
-				            React.DOM.li(null, React.DOM.a( {href:"#"}, "Settings")),
-				            React.DOM.li(null, React.DOM.a( {href:"#"}, "Profile")),
-				            React.DOM.li(null, React.DOM.a( {href:"#"}, "Help"))
+				            React.DOM.li(null, React.DOM.a( {href:"#/providers"}, "My Providers")),
+				            React.DOM.li(null, React.DOM.a( {href:"#/explore"}, "Explore Stories")),
+				            React.DOM.li(null, React.DOM.a( {href:"#"}, "Account"))
 				          ),
 				          React.DOM.form( {className:"navbar-form navbar-right"}, 
 				            React.DOM.input( {type:"text", className:"form-control", placeholder:"Search..."})
@@ -92,9 +73,12 @@ function (_,
 	var routes = (
 		Routes( {location:"hash"}, 
 			Route( {path:"/", handler:App}, 
-	   			Route( {handler:ProvidersList} ),
+	   			Route( {path:"/providers", handler:ProvidersList} ),
 	   			Route( {path:"/providers/:providerId/channels", handler:ChannelsComponent} ),
-	        	Route( {path:"/providers/:providerId/channels/:channelId/stories", handler:StoriesComponent} )
+	        	Route( {path:"/providers/:providerId/channels/:channelId/stories", handler:StoriesComponent, action:"view"} ),
+	        	Route( {path:"/providers/:providerId/channels/:channelId/stories/new", handler:StoriesComponent, action:"new"} ),
+	        	Route( {path:"/providers/:providerId/channels/:channelId/stories/:storyId/edit", handler:StoriesComponent, action:"edit"} ),
+	        	Route( {path:"/explore", handler:StoriesExplorer} )
 			)
 		)
 	);

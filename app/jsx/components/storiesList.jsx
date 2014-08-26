@@ -6,9 +6,9 @@ define(
     "react",
     "reflux",
 
-    "actions/actions"
+    "actions/storiesActions"
 ],
-function (_, Backbone, React, Reflux, ACTIONS)
+function (_, Backbone, React, Reflux, ACTIONS_Stories)
 {
     return React.createClass(
     {
@@ -30,13 +30,13 @@ function (_, Backbone, React, Reflux, ACTIONS)
 
         _createStoriesDom: function(story)
         {
-            var storyLink = window.location + "/stories/" + story.StoryId;
+            var storyLink = "#/providers/" + this.props.providerId + "/channels/" + this.props.channelId + "/stories/" + story.StoryId + "/edit";
             return <li key={story.StoryId}><a href={storyLink}>{story.StoryTitle}</a><span className="glyphicon glyphicon-remove" onClick={this._onDeleteStory.bind(this, story.StoryId)}></span></li>
         },
 
         _onDeleteStory: function(storyId)
         {
-            ACTIONS.deleteStory(storyId);
+            ACTIONS_Stories.deleteStory(storyId);
         }
     });
 });

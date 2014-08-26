@@ -5,15 +5,19 @@ define(
     "backbone",
     "react",
     "reflux",
+    "react.router",
 
-    "actions/channelActions",
+    "actions/channelsActions",
 
     "components/channelsList",
 
     "stores/channelsStore"
 ],
-function (_, Backbone, React, Reflux, CHANNEL_ACTIONS, ChannelsList, channelsStore)
+function (_, Backbone, React, Reflux, ReactRouter, ACTIONS_Channels, ChannelsList, channelsStore)
 {
+    var Routes = ReactRouter.Routes;
+    var Route = ReactRouter.Route;
+
     var ChannelsEditor = React.createClass(
     {
         mixins: [React.addons.LinkedStateMixin],
@@ -41,25 +45,11 @@ function (_, Backbone, React, Reflux, CHANNEL_ACTIONS, ChannelsList, channelsSto
 
         _onGoClicked: function()
         {
-            if(this._isNewChannel())
-            {
-                CHANNEL_ACTIONS.addChannel(this.state);
-            }
-            else
-            {
-                CHANNEL_ACTIONS.editChannel(this.state);
-            }
         }
     });
 
     return React.createClass(
     {
-        _setupChannels: function(providerId)
-        {
-            channelsStore.setProviderId(providerId);
-            ACTIONS.getChannels();
-        },
-
         getInitialState: function()
         {
             return { channels: []  }
@@ -69,17 +59,14 @@ function (_, Backbone, React, Reflux, CHANNEL_ACTIONS, ChannelsList, channelsSto
         {
             this.unsubscribe = [];
 
-            this.unsubscribe.push(channelsStore.listen(function(data)
-            {
-                this.setState({ channels: data });
-            }.bind(this)).bind(this));
+            this.unsubscribe.push(channelsStore.listen(this._updateStateFromStore));
 
-            this._setupChannels(this.props.providerId);
+            ACTIONS_Channels.loadChannels(this.props.params.providerId);
         },
 
         componentWillReceiveProps: function(nextProps)
         {
-            this._setupChannels(nextProps.providerId);
+            ACTIONS_Channels.loadChannels(nextProps.params.providerId);
         },
 
         componentWillUnmount: function()
@@ -87,15 +74,24 @@ function (_, Backbone, React, Reflux, CHANNEL_ACTIONS, ChannelsList, channelsSto
             this.unsubscribe.forEach(function(fn) { fn(); });
         },
 
+        _updateStateFromStore: function(storeState)
+        {
+            if(storeState.valid)
+            {
+                this.setState({ channels: storeState.data.channels });
+            }
+        },
+
         render: function()
         {
             return (
-                <Routes>
-                    <Route handler={ChannelsList} />
-                    <Route path="/providers/:providerId/channels/:channelId/editor" handler={ChannelsEditor} />
-                </Routes>
+                <div>
+                    <h3>Channels</h3>
+                    <ChannelsList channels={this.state.channels} />
+                </div>
             );
         }
     });
 });
+
 

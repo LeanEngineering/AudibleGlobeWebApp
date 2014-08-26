@@ -5,97 +5,69 @@ define(
     "react",
     "reflux",
 
-    "actions/actions"
+    "actions/storiesActions",
+
+    "apis/storiesApi"
 ],
-function (_, Backbone, React, Reflux, ACTIONS)
+function (_, Backbone, React, Reflux, ACTIONS_Stories, StoriesApi)
 {
-    var StoryModel = Backbone.Model.extend(
-    {
-        idAttribute: "StoryId"
-    });
-
-    var StoriesCollection = Backbone.Collection.extend(
-    {
-        model: StoryModel,
-
-        initialize: function(options)
-        {
-            this._providerId = options ? options.providerId : null;
-            this._channelId = options ? options.channelId : null;
-        },
-
-        setChannel: function(providerId, channelId)
-        {
-            this._providerId = providerId;
-            this._channelId = channelId;
-        },
-
-        url: function()
-        {
-            return "http://127.0.0.1/providers/" + this._providerId + "/channels/" + this._channelId + "/stories";
-        }
-    });
-
     return Reflux.createStore(
     {
         init: function()
         {
-            this._stories = new StoriesCollection();
+            this._stories = [];
 
-            this.listenTo(ACTIONS.getStories, this._onGetStories);
-            this.listenTo(ACTIONS.addStory, this._onAddStory);
-            this.listenTo(ACTIONS.deleteStory, this._onDeleteStory);
-            this.listenTo(ACTIONS.updateStory, this._onUpdateStory);
+            this.listenTo(ACTIONS_Stories.loadStories, this._onLoadStories);
+            this.listenTo(ACTIONS_Stories.loadStories_Api_Success, this._onLoadStoriesApiSuccess);
+            this.listenTo(ACTIONS_Stories.loadStories_Api_Failure, this._onLoadStoriesApiFailure);
         },
 
-        setChannel: function(providerId, channelId)
+        _onLoadStories: function(options)
         {
-            this._stories.setChannel(providerId, channelId);
+            StoriesApi.getStories(options.providerId, options.channelId);            
+
+            this._state =
+            {
+                valid: true,
+                data:
+                {
+                    stories: this._stories
+                }
+            };
+
+            this.trigger(this._state);
         },
 
-        _onGetStories: function()
+        _onLoadStoriesApiSuccess: function(data)
         {
-            this._stories.fetch().done(function(data)
+            this._stories = data;
+
+            this._state =
             {
-                this.trigger(data);
-            }.bind(this));
+                valid: true,
+                data:
+                {
+                    error: null,
+                    stories: this._stories
+                }
+            };
+
+            this.trigger(this._state);
         },
 
-        _onAddStory: function(story)
+        _onLoadStoriesApiFailure: function(error)
         {
-            var onSuccess = function(data)
+            this._state =
             {
-                this.trigger(this._stories.toJSON());
-            }.bind(this);
+                valid: false,
+                data:
+                {
+                    error: error,
+                    stories: this._stories
+                }
+            };
 
-            this._stories.create(_.extend(story, { StoryChannelId: this._stories._channelId }),
-                                 { wait: true, success: onSuccess });
-        },
-
-        _onDeleteStory: function(storyId)
-        {
-            this._stories.get(storyId).destroy().always(function()
-            {
-                this.trigger(this._stories.toJSON());
-            }.bind(this));
-        },
-
-        _onUpdateStory: function(story)
-        {
-           var onSuccess = function(data)
-            {
-                this.trigger(this._stories.toJSON());
-            }.bind(this);
-            
-            var existingStory = this._stories.get(story.StoryId);
-
-            if(!existingStory)
-            {
-                throw new Error("No matching story found in collection.");
-            }
-
-            existingStory.attributes = _.merge(existingStory.attributes, story);
-            existingStory.save().done(onSuccess);
+            this.trigger(this._state);
         }
     });
 });

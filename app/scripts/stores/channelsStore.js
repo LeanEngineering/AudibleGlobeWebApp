@@ -5,81 +5,73 @@ define(
     "react",
     "reflux",
 
-    "actions/actions"
+    "actions/channelsActions",
+
+    "apis/channelsApi"
 ],
-function (_, Backbone, React, Reflux, ACTIONS)
+function (_, Backbone, React, Reflux, ACTIONS_Channels, ChannelsApi)
 {
-    var ChannelModel = Backbone.Model.extend(
-    {
-        idAttribute: "ChannelId"
-    });
-
-    var ChannelsCollection = Backbone.Collection.extend(
-    {
-        model: ChannelModel,
-
-        initialize: function(options)
-        {
-            this._providerId = options ? options.providerId : null;
-        },
-
-        setProviderId: function(providerId)
-        {
-            this._providerId = providerId;
-        },
-
-        url: function()
-        {
-            return "http://127.0.0.1/providers/" + this._providerId + "/channels";
-        }
-    });
-
     return Reflux.createStore(
     {
         init: function()
         {
-            this._channels = new ChannelsCollection();
+            this._channels = [];
 
-            this.listenTo(ACTIONS.getChannels, this._onGetChannels);
-            this.listenTo(ACTIONS.addChannel, this._onAddChannel);
-            this.listenTo(ACTIONS.deleteChannel, this._onDeleteChannel);
+            // Forward VIEW action to API
+            this.listenTo(ACTIONS_Channels.loadChannels, this._onLoadChannels);
+
+            // Subscribe to API actions
+            this.listenTo(ACTIONS_Channels.loadChannels_Api_Success, this._onLoadChannelsApiSuccess);
+            this.listenTo(ACTIONS_Channels.loadChannels_Api_Failure, this._onLoadChannelsApiFailure);
         },
 
-        getState: function()
+        _onLoadChannels: function(providerId)
         {
-            return this._channels.toJSON();
-        },
+            ChannelsApi.getChannels(providerId);            
 
-        setProviderId: function(providerId)
-        {
-            this._channels.setProviderId(providerId);
-        },
-
-        _onGetChannels: function()
-        {
-            this._channels.fetch().done(function(data)
+            this._state =
             {
-                this.trigger(data);
-            }.bind(this));
+                valid: true,
+                data:
+                {
+                    channels: this._channels
+                }
+            };
+
+            this.trigger(this._state);
         },
 
-        _onAddChannel: function(name)
+        _onLoadChannelsApiSuccess: function(data)
         {
-            var onSuccess = function(data)
-            {
-                this.trigger(this._channels.toJSON());
-            }.bind(this);
+            this._channels = data;
 
-            this._channels.create({ ChannelName: name, ChannelProviderId: this._channels._providerId },
-                                  { wait: true, success: onSuccess });
+            this._state =
+            {
+                valid: true,
+                data:
+                {
+                    error: null,
+                    channels: this._channels
+                }
+            };
+
+            this.trigger(this._state);
         },
 
-        _onDeleteChannel: function(channelId)
+        _onLoadChannelsApiFailure: function(error)
         {
-            this._channels.get(channelId).destroy().always(function()
+            this._state =
             {
-                this.trigger(this._channels.toJSON());
-            }.bind(this));
+                valid: false,
+                data:
+                {
+                    error: error,
+                    channels: this._channels
+                }
+            };
+
+            this.trigger(this._state);
         }
+
     });
 });

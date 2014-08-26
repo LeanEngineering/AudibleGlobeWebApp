@@ -5,43 +5,51 @@ define(
     "backbone",
     "react",
     "reflux",
+    "react.router",
 
-    "actions/actions",
+    "actions/channelsActions",
 
     "components/channelsList",
 
     "stores/channelsStore"
 ],
-function (_, Backbone, React, Reflux, ACTIONS, ChannelsList, channelsStore)
+function (_, Backbone, React, Reflux, ReactRouter, ACTIONS_Channels, ChannelsList, channelsStore)
 {
-    var NewChannelInput = React.createClass(
-    {displayName: 'NewChannelInput',
+    var Routes = ReactRouter.Routes;
+    var Route = ReactRouter.Route;
+
+    var ChannelsEditor = React.createClass(
+    {displayName: 'ChannelsEditor',
+        mixins: [React.addons.LinkedStateMixin],
+
+        getInitialState: function()
+        {
+            return { ChannelId: null, ChannelName: "", ChannelProviderId: null };
+        },
+
         render: function()
         {
+            var header = this.props.channelId === "new" ? React.DOM.h3(null, "NewChannel") : React.DOM.h3(null, "Edit Channel");
+
             return (
                 React.DOM.div(null, 
-                    React.DOM.h3(null, "Add New Channel"),
-                    React.DOM.input( {id:"newChannelInput", type:"text"}),
-                    React.DOM.label( {htmlFor:"newChannelInput"}, "Channel Name"),
+                    header,
+                    React.DOM.label( {htmlFor:"newChannelInput", valueLink:this.linkState("ChannelName")}, "Channel Name"),
+                    React.DOM.input( {id:"newChannelInput", type:"text", value:true}),
                     React.DOM.button( {onClick:this._onGoClicked}, "GO")
                 )
             );
         },
 
+        _isNewChannel: function() { return this.props.channelId === "new"; },
+
         _onGoClicked: function()
         {
-            ACTIONS.addChannel($(this.getDOMNode()).find("input").val());
         }
     });
 
     return React.createClass(
     {
-        _setupChannels: function(providerId)
-        {
-            channelsStore.setProviderId(providerId);
-            ACTIONS.getChannels();
-        },
-
         getInitialState: function()
         {
             return { channels: []  }
@@ -51,17 +59,14 @@ function (_, Backbone, React, Reflux, ACTIONS, ChannelsList, channelsStore)
         {
             this.unsubscribe = [];
 
-            this.unsubscribe.push(channelsStore.listen(function(data)
-            {
-                this.setState({ channels: data });
-            }.bind(this)).bind(this));
+            this.unsubscribe.push(channelsStore.listen(this._updateStateFromStore));
 
-            this._setupChannels(this.props.providerId);
+            ACTIONS_Channels.loadChannels(this.props.params.providerId);
         },
 
         componentWillReceiveProps: function(nextProps)
         {
-            this._setupChannels(nextProps.providerId);
+            ACTIONS_Channels.loadChannels(nextProps.params.providerId);
         },
 
         componentWillUnmount: function()
@@ -69,15 +74,24 @@ function (_, Backbone, React, Reflux, ACTIONS, ChannelsList, channelsStore)
             this.unsubscribe.forEach(function(fn) { fn(); });
         },
 
+        _updateStateFromStore: function(storeState)
+        {
+            if(storeState.valid)
+            {
+                this.setState({ channels: storeState.data.channels });
+            }
+        },
+
         render: function()
         {
             return (
                 React.DOM.div(null, 
-                    ChannelsList( {providerId:this.props.providerId, channels:this.state.channels} ),
-                    NewChannelInput(null )
+                    React.DOM.h3(null, "Channels"),
+                    ChannelsList( {channels:this.state.channels} )
                 )
             );
         }
     });
 });
+
 

@@ -6,13 +6,13 @@ define(
     "react",
     "reflux",
 
-    "actions/actions",
+    "actions/storiesActions",
 
     "stores/storiesStore",
 
     "leaflet"
 ],
-function (_, Backbone, React, Reflux, ACTIONS, storiesStore, L)
+function (_, Backbone, React, Reflux, ACTIONS_Stories, storiesStore, L)
 {
 	return React.createClass(
     {
