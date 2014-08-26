@@ -46,6 +46,8 @@ function (_, Backbone, React, Reflux, ACTIONS_Stories, storiesStore)
 
         render: function()
         {
+            var buttonText = this.props.status === "inprogress" ? "Saving..." : "Save";
+
             return (
             	React.DOM.div( {className:"storyEditorComponentContainer"}, 
 	                React.DOM.form( {className:"form-horizontal"}, 
@@ -88,7 +90,7 @@ function (_, Backbone, React, Reflux, ACTIONS_Stories, storiesStore)
 	                        React.DOM.div( {className:"control-group"}, 
 	                          React.DOM.label( {className:"control-label", htmlFor:"newStoryButton"}),
 	                          React.DOM.div( {className:"controls"}, 
-	                            React.DOM.button( {type:"button", name:"newStoryButton", className:"btn btn-primary", onClick:this._onGoClicked}, "Save")
+	                            React.DOM.button( {type:"button", name:"newStoryButton", className:"btn btn-primary", onClick:this._onGoClicked}, buttonText)
 	                          )
 	                        )
 	                    )

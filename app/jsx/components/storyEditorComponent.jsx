@@ -46,6 +46,8 @@ function (_, Backbone, React, Reflux, ACTIONS_Stories, storiesStore)
 
         render: function()
         {
+            var buttonText = this.props.status === "inprogress" ? "Saving..." : "Save";
+
             return (
             	<div className="storyEditorComponentContainer">
 	                <form className="form-horizontal">
@@ -88,7 +90,7 @@ function (_, Backbone, React, Reflux, ACTIONS_Stories, storiesStore)
 	                        <div className="control-group">
 	                          <label className="control-label" htmlFor="newStoryButton"></label>
 	                          <div className="controls">
-	                            <button type="button" name="newStoryButton" className="btn btn-primary" onClick={this._onGoClicked}>Save</button>
+	                            <button type="button" name="newStoryButton" className="btn btn-primary" onClick={this._onGoClicked}>{buttonText}</button>
 	                          </div>
 	                        </div>
 	                    </fieldset>

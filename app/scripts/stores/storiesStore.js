@@ -83,7 +83,7 @@ function (_, Backbone, React, Reflux, ACTIONS_Stories, StoriesApi)
 
             this._state =
             {
-                valid: true,
+                status: "inprogress",
                 data:
                 {
                     stories: this._stories
@@ -100,7 +100,7 @@ function (_, Backbone, React, Reflux, ACTIONS_Stories, StoriesApi)
 
             this._state =
             {
-                valid: true,
+                status: "ok",
                 data:
                 {
                     error: null,
@@ -115,7 +115,7 @@ function (_, Backbone, React, Reflux, ACTIONS_Stories, StoriesApi)
         {
             this._state =
             {
-                valid: false,
+                status: "error",
                 data:
                 {
                     error: error,

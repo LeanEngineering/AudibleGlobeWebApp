@@ -58,9 +58,9 @@ function (_, Backbone, React, Reflux, ACTIONS_Stories, StoriesList, StoryEditor,
 
         _updateStateFromStore: function(storeState)
         {
-            if(storeState.valid)
+            if(storeState.valid || storeState.status === "inprogress" || storeState.status === "ok")
             {
-                this.setState({ stories: storeState.data.stories });
+                this.setState({ stories: storeState.data.stories, storeStatus: storeState.status });
             }
         },
 
@@ -76,7 +76,7 @@ function (_, Backbone, React, Reflux, ACTIONS_Stories, StoriesList, StoryEditor,
                     <div>
                         <div className="col-md-4">
                             <h3>Edit Story</h3>
-                            <StoryEditor story={selectedStory} providerId={this.props.params.providerId} channelId={this.props.params.channelId} />
+                            <StoryEditor story={selectedStory} providerId={this.props.params.providerId} channelId={this.props.params.channelId} status={this.state.storeStatus} />
                         </div>
                         <div className="col-md-4">
                             <StoryMap story={selectedStory} />
