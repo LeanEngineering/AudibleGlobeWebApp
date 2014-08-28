@@ -74,12 +74,9 @@ function (_, Backbone, React, Reflux, ACTIONS_Stories, StoriesList, StoryEditor,
                 components =
                 (
                     React.DOM.div(null, 
-                        React.DOM.div( {className:"col-md-4"}, 
+                        React.DOM.div( {className:"col-md-8"}, 
                             React.DOM.h3(null, "Edit Story"),
                             StoryEditor( {story:selectedStory, providerId:this.props.params.providerId, channelId:this.props.params.channelId, status:this.state.storeStatus} )
-                        ),
-                        React.DOM.div( {className:"col-md-4"}, 
-                            StoryMap( {story:selectedStory} )
                         )
                     )
                 );
@@ -89,12 +86,9 @@ function (_, Backbone, React, Reflux, ACTIONS_Stories, StoriesList, StoryEditor,
                 components =
                 (
                     React.DOM.div(null, 
-                        React.DOM.div( {className:"col-md-4"}, 
+                        React.DOM.div( {className:"col-md-8"}, 
                             React.DOM.h3(null, "Create New Story"),
                             StoryEditor( {story:null} )
-                        ),
-                        React.DOM.div( {className:"col-md-4"}, 
-                            StoryMap( {story:null} )
                         )
                     )
                 );

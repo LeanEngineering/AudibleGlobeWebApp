@@ -46,4 +46,8 @@ footer
 	border: 0;
 }
 
-
+.mapContainer
+{
+	width: 800px;
+	height: 800px;
+}
