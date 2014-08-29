@@ -30,6 +30,14 @@ function (_,
 	var Routes = ReactRouter.Routes;
 	var Route = ReactRouter.Route;
 
+	var LocationSearcher = React.createClass(
+	{displayName: 'LocationSearcher',
+		render: function()
+		{
+			return React.DOM.input( {type:"text", className:"form-control", placeholder:"Search Location..."});
+		}
+	});
+
 	var App = React.createClass(
 	{displayName: 'App',
 		render: function()
@@ -54,7 +62,7 @@ function (_,
 				            React.DOM.li(null, React.DOM.a( {href:"#"}, "Account"))
 				          ),
 				          React.DOM.form( {className:"navbar-form navbar-right"}, 
-				            React.DOM.input( {type:"text", className:"form-control", placeholder:"Search..."})
+				            LocationSearcher(null )
 				          )
 				        )
 				      )

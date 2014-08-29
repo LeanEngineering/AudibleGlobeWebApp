@@ -16,6 +16,11 @@ function (_, Backbone, React, Reflux, ACTIONS_Stories, StoriesApi)
         init: function()
         {
             this._stories = [];
+            this._state = {};
+
+            this.listenTo(ACTIONS_Stories.exploreStories, this._onExploreStories);
+            this.listenTo(ACTIONS_Stories.exploreStories_Api_Success, this._onExploreStories_Api_Success);
+            this.listenTo(ACTIONS_Stories.exploreStories_Api_Failure, this._onExploreStories_Api_Failure);
 
             this.listenTo(ACTIONS_Stories.loadStories, this._onLoadStories);
             this.listenTo(ACTIONS_Stories.loadStories_Api_Success, this._onLoadStoriesApiSuccess);
@@ -24,6 +29,36 @@ function (_, Backbone, React, Reflux, ACTIONS_Stories, StoriesApi)
             this.listenTo(ACTIONS_Stories.updateStory, this._onUpdateStory);
             this.listenTo(ACTIONS_Stories.updateStory_Api_Success, this._onUpdateStoryApiSuccess);
             this.listenTo(ACTIONS_Stories.updateStory_Api_Failure, this._onUpdateStoryApiFailure);
+        },
+
+        _onExploreStories: function(latLon)
+        {
+            StoriesApi.getStoriesNearby(latLon.lat, latLon.lon, 100);
+
+            this._state.latLon =
+            {
+                lat: latLon.lat,
+                lon: latLon.lon
+            };
+        },
+
+        _onExploreStories_Api_Success: function(data)
+        {
+            this._state = _.merge(this._state,
+            {
+                valid: true,
+                data:
+                {
+                    stories: data
+                }
+            });
+
+            this.trigger(this._state);
+        },
+
+        _onExploreStories_Api_Failure: function(error)
+        {
+
         },
 
         _onLoadStories: function(options)

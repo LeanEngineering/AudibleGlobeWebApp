@@ -7,6 +7,10 @@ function (Reflux)
 {
     var actionNames =
     [
+        "exploreStories",
+        "exploreStories_Api_Success",
+        "exploreStories_Api_Failure",
+        
         "loadStories",
         "loadStories_Api_Success",
         "loadStories_Api_Failure",

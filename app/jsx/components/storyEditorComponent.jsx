@@ -35,7 +35,7 @@ function (_, Backbone, React, Reflux, ACTIONS_Stories, storiesStore)
         {
             if(nextProps && nextProps.lat && nextProps.lon)
             {
-                this.map.setView([ nextProps.lat, nextProps.lon ], this.map.getZoom() || 13);
+                this.map.setView([ nextProps.lat, nextProps.lon ], this.map.getZoom() || 13 );
                 this.marker.setLatLng(L.latLng(nextProps.lat, nextProps.lon));
             }
         },
