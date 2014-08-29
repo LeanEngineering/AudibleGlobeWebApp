@@ -1,164 +1,157 @@
-define(
-[
-    "underscore",
-    "backbone",
-    "react",
-    "reflux",
+var _ = require("lodash");
+var React = require("react");
+var Reflux = require("reflux");
 
-    "actions/storiesActions",
+var ACTIONS_Stories = require("../actions/storiesActions");
+var StoriesApi = require("../apis/storiesApi");
 
-    "apis/storiesApi"
-],
-function (_, Backbone, React, Reflux, ACTIONS_Stories, StoriesApi)
+module.exports = Reflux.createStore(
 {
-    return Reflux.createStore(
+    init: function()
     {
-        init: function()
+        this._stories = [];
+        this._state = {};
+
+        this.listenTo(ACTIONS_Stories.exploreStories, this._onExploreStories);
+        this.listenTo(ACTIONS_Stories.exploreStories_Api_Success, this._onExploreStories_Api_Success);
+        this.listenTo(ACTIONS_Stories.exploreStories_Api_Failure, this._onExploreStories_Api_Failure);
+
+        this.listenTo(ACTIONS_Stories.loadStories, this._onLoadStories);
+        this.listenTo(ACTIONS_Stories.loadStories_Api_Success, this._onLoadStoriesApiSuccess);
+        this.listenTo(ACTIONS_Stories.loadStories_Api_Failure, this._onLoadStoriesApiFailure);
+
+        this.listenTo(ACTIONS_Stories.updateStory, this._onUpdateStory);
+        this.listenTo(ACTIONS_Stories.updateStory_Api_Success, this._onUpdateStoryApiSuccess);
+        this.listenTo(ACTIONS_Stories.updateStory_Api_Failure, this._onUpdateStoryApiFailure);
+    },
+
+    _onExploreStories: function(latLon)
+    {
+        StoriesApi.getStoriesNearby(latLon.lat, latLon.lon, 100);
+
+        this._state.latLon =
         {
-            this._stories = [];
-            this._state = {};
+            lat: latLon.lat,
+            lon: latLon.lon
+        };
+    },
 
-            this.listenTo(ACTIONS_Stories.exploreStories, this._onExploreStories);
-            this.listenTo(ACTIONS_Stories.exploreStories_Api_Success, this._onExploreStories_Api_Success);
-            this.listenTo(ACTIONS_Stories.exploreStories_Api_Failure, this._onExploreStories_Api_Failure);
-
-            this.listenTo(ACTIONS_Stories.loadStories, this._onLoadStories);
-            this.listenTo(ACTIONS_Stories.loadStories_Api_Success, this._onLoadStoriesApiSuccess);
-            this.listenTo(ACTIONS_Stories.loadStories_Api_Failure, this._onLoadStoriesApiFailure);
-
-            this.listenTo(ACTIONS_Stories.updateStory, this._onUpdateStory);
-            this.listenTo(ACTIONS_Stories.updateStory_Api_Success, this._onUpdateStoryApiSuccess);
-            this.listenTo(ACTIONS_Stories.updateStory_Api_Failure, this._onUpdateStoryApiFailure);
-        },
-
-        _onExploreStories: function(latLon)
+    _onExploreStories_Api_Success: function(data)
+    {
+        this._state = _.merge(this._state,
         {
-            StoriesApi.getStoriesNearby(latLon.lat, latLon.lon, 100);
-
-            this._state.latLon =
+            valid: true,
+            data:
             {
-                lat: latLon.lat,
-                lon: latLon.lon
-            };
-        },
+                stories: data
+            }
+        });
 
-        _onExploreStories_Api_Success: function(data)
+        this.trigger(this._state);
+    },
+
+    _onExploreStories_Api_Failure: function(error)
+    {
+
+    },
+
+    _onLoadStories: function(options)
+    {
+        StoriesApi.getStories(options.providerId, options.channelId);            
+
+        this._state =
         {
-            this._state = _.merge(this._state,
+            valid: true,
+            data:
             {
-                valid: true,
-                data:
-                {
-                    stories: data
-                }
-            });
+                stories: this._stories
+            }
+        };
 
-            this.trigger(this._state);
-        },
+        this.trigger(this._state);
+    },
 
-        _onExploreStories_Api_Failure: function(error)
+    _onLoadStoriesApiSuccess: function(data)
+    {
+        this._stories = data;
+
+        this._state =
         {
-
-        },
-
-        _onLoadStories: function(options)
-        {
-            StoriesApi.getStories(options.providerId, options.channelId);            
-
-            this._state =
+            valid: true,
+            data:
             {
-                valid: true,
-                data:
-                {
-                    stories: this._stories
-                }
-            };
+                error: null,
+                stories: this._stories
+            }
+        };
 
-            this.trigger(this._state);
-        },
+        this.trigger(this._state);
+    },
 
-        _onLoadStoriesApiSuccess: function(data)
+    _onLoadStoriesApiFailure: function(error)
+    {
+        this._state =
         {
-            this._stories = data;
-
-            this._state =
+            valid: false,
+            data:
             {
-                valid: true,
-                data:
-                {
-                    error: null,
-                    stories: this._stories
-                }
-            };
+                error: error,
+                stories: this._stories
+            }
+        };
 
-            this.trigger(this._state);
-        },
+        this.trigger(this._state);
+    },
 
-        _onLoadStoriesApiFailure: function(error)
+    _onUpdateStory: function(options)
+    {
+        StoriesApi.updateStory(options.providerId, options.channelId, options.story);
+
+        var i = _(this._stories).findIndex({ StoryId: options.story.StoryId });
+        this._stories[i] = options.story;
+
+        this._state =
         {
-            this._state =
+            status: "inprogress",
+            data:
             {
-                valid: false,
-                data:
-                {
-                    error: error,
-                    stories: this._stories
-                }
-            };
+                stories: this._stories
+            }
+        };
 
-            this.trigger(this._state);
-        },
+        this.trigger(this._state);
+    },
 
-        _onUpdateStory: function(options)
+    _onUpdateStoryApiSuccess: function(story)
+    {
+        var i = _(this._stories).findIndex({ StoryId: story.StoryId });
+        this._stories[i] = story;
+
+        this._state =
         {
-            StoriesApi.updateStory(options.providerId, options.channelId, options.story);
-
-            var i = _(this._stories).findIndex({ StoryId: options.story.StoryId });
-            this._stories[i] = options.story;
-
-            this._state =
+            status: "ok",
+            data:
             {
-                status: "inprogress",
-                data:
-                {
-                    stories: this._stories
-                }
-            };
+                error: null,
+                stories: this._stories
+            }
+        };
 
-            this.trigger(this._state);
-        },
+        this.trigger(this._state);
+    },
 
-        _onUpdateStoryApiSuccess: function(story)
+    _onUpdateStoryApiFailure: function(error)
+    {
+        this._state =
         {
-            var i = _(this._stories).findIndex({ StoryId: story.StoryId });
-            this._stories[i] = story;
-
-            this._state =
+            status: "error",
+            data:
             {
-                status: "ok",
-                data:
-                {
-                    error: null,
-                    stories: this._stories
-                }
-            };
+                error: error,
+                stories: this._stories
+            }
+        };
 
-            this.trigger(this._state);
-        },
-
-        _onUpdateStoryApiFailure: function(error)
-        {
-            this._state =
-            {
-                status: "error",
-                data:
-                {
-                    error: error,
-                    stories: this._stories
-                }
-            };
-
-            this.trigger(this._state);
-        }
-    });
+        this.trigger(this._state);
+    }
 });

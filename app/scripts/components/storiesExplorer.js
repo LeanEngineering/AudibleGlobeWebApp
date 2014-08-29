@@ -1,86 +1,82 @@
 /** @jsx React.DOM */
-define(
-[
-    "underscore",
-    "backbone",
-    "react",
-    "reflux",
-    "leaflet",
 
-    "actions/storiesActions",
-    "stores/storiesStore"
-],
-function (_, Backbone, React, Reflux, L, ACTIONS_Stories, storiesStore)
+var _ = require("lodash");
+var React = require("react");
+var Reflux = require("reflux");
+var L = require("leaflet");
+
+var ACTIONS_Stories = require("../actions/storiesActions");
+var storiesStore = require("../stores/storiesStore");
+
+var StoriesExplorer = React.createClass(
 {
-    return React.createClass(
+    getInitialState: function()
     {
-        getInitialState: function()
+        return { lat: null, lon: null, radius: 100, stories: [] }
+    },
+
+    componentWillMount: function()
+    {
+        storiesStore.listen(this._updateStateFromStore);
+
+        navigator.geolocation.getCurrentPosition(function(position)
         {
-            return { lat: null, lon: null, radius: 100, stories: [] }
-        },
-
-        componentWillMount: function()
+            ACTIONS_Stories.exploreStories({ lat: position.coords.latitude, lon: position.coords.longitude });
+        }, function(error)
         {
-            storiesStore.listen(this._updateStateFromStore);
+            console.log(error);
+        });
+    },
 
-            navigator.geolocation.getCurrentPosition(function(position)
-            {
-                ACTIONS_Stories.exploreStories({ lat: position.coords.latitude, lon: position.coords.longitude });
-            }, function(error)
-            {
-                console.log(error);
-            });
-        },
+    componentDidMount: function()
+    {
+        this._map = L.map(this.getDOMNode());
 
-        componentDidMount: function()
+        L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png",
         {
-            this._map = L.map(this.getDOMNode());
+            attribution: "",
+            maxZoom: 18
+        }).addTo(this._map);
 
-            L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png",
-            {
-                attribution: "",
-                maxZoom: 18
-            }).addTo(this._map);
-
-            this._map.on("dragend", function(e)
-            {
-                var mapCenter = this._map.getCenter();
-                ACTIONS_Stories.exploreStories({ lat: mapCenter.lat, lon: mapCenter.lng });
-            }.bind(this));
-        },
-
-        _updateStateFromStore: function(data)
+        this._map.on("dragend", function(e)
         {
-            this.setState(
-            {
-                stories: data.stories,
-                lat: data.latLon.lat,
-                lon: data.latLon.lon
-            });
-        },
+            var mapCenter = this._map.getCenter();
+            ACTIONS_Stories.exploreStories({ lat: mapCenter.lat, lon: mapCenter.lng });
+        }.bind(this));
+    },
 
-        _createMarkersForStories: function(stories)
+    _updateStateFromStore: function(data)
+    {
+        this.setState(
         {
-            _.each(this._markers, function(marker) { });
+            stories: data.stories,
+            lat: data.latLon.lat,
+            lon: data.latLon.lon
+        });
+    },
 
-            this._markers = _.map(stories, function(story)
-            {
-                return L.marker([ story.Latitude, story.Longitude ]).addTo(this._map);
-            }.bind(this));
-        },
+    _createMarkersForStories: function(stories)
+    {
+        _.each(this._markers, function(marker) { });
 
-    	render: function()
-    	{
-            if(this._map)
-            {
-                this._map.setView([ this.state.lat, this.state.lon ], this._map.getZoom() || 13);
-                this._createMarkersForStories(this.state.stories);
-            }
+        this._markers = _.map(stories, function(story)
+        {
+            return L.marker([ story.Latitude, story.Longitude ]).addTo(this._map);
+        }.bind(this));
+    },
 
-    		return (
-                React.DOM.div( {className:"exploreStoriesMapContainer"})
-            );
-    	}
-    });
+	render: function()
+	{
+        if(this._map)
+        {
+            this._map.setView([ this.state.lat, this.state.lon ], this._map.getZoom() || 13);
+            this._createMarkersForStories(this.state.stories);
+        }
 
+		return (
+            <div className="exploreStoriesMapContainer"></div>
+        );
+	}
 });
+
+module.exports = StoriesExplorer;

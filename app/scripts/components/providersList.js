@@ -1,70 +1,67 @@
 /** @jsx React.DOM */
-define(
-[
-    "underscore",
-    "backbone",
-    "react",
-    "reflux",
 
-    "actions/providersActions",
+var _ = require("lodash");
+var React = require("react");
+var Reflux = require("reflux");
 
-    "stores/providersStore"
-],
-function (_, Backbone, React, Reflux, ACTIONS_Providers, providersStore)
+var ACTIONS_Providers = require("../actions/providersActions");
+var providersStore = require("../stores/providersStore");
+
+
+var ProvidersList = React.createClass(
 {
-    return React.createClass(
+    getInitialState: function() { return { providers: [] }; },
+
+    componentWillMount: function()
     {
-        getInitialState: function() { return { providers: [] }; },
+        this.unsubscribe = [];
 
-        componentWillMount: function()
+        this.unsubscribe.push(providersStore.listen(this._updateStateFromStore));
+
+        ACTIONS_Providers.loadProviders();
+    },
+
+    componentWillReceiveProps: function(nextProps)
+    {
+        ACTIONS_Providers.loadProviders();
+    },
+
+    componentWillUnmount: function()
+    {
+        this.unsubscribe.forEach(function(fn) { fn(); });
+    },
+
+    render: function()
+    {
+        var providers = _.map(this.state.providers, this._createProviderDom);
+
+        return (
+            <div>
+                <h2>Providers</h2>
+                <ul>
+                    {providers}
+                </ul>
+            </div>
+        )
+    },
+
+    _createProviderDom: function(provider)
+    {
+        var providerLink = "#/providers/" + provider.ProviderId + "/channels";
+        return <li key={provider.ProviderId} onClick={this._onClick}><a href={providerLink}>{provider.ProviderName}</a></li>
+    },
+
+    _onClick: function()
+    {
+    },
+
+    _updateStateFromStore: function(storeState)
+    {
+        if(storeState.valid)
         {
-            this.unsubscribe = [];
-
-            this.unsubscribe.push(providersStore.listen(this._updateStateFromStore));
-
-            ACTIONS_Providers.loadProviders();
-        },
-
-        componentWillReceiveProps: function(nextProps)
-        {
-            ACTIONS_Providers.loadProviders();
-        },
-
-        componentWillUnmount: function()
-        {
-            this.unsubscribe.forEach(function(fn) { fn(); });
-        },
-
-        render: function()
-        {
-            var providers = _.map(this.state.providers, this._createProviderDom);
-
-            return (
-                React.DOM.div(null, 
-                    React.DOM.h2(null, "Providers"),
-                    React.DOM.ul(null, 
-                        providers
-                    )
-                )
-            )
-        },
-
-        _createProviderDom: function(provider)
-        {
-            var providerLink = "#/providers/" + provider.ProviderId + "/channels";
-            return React.DOM.li( {key:provider.ProviderId, onClick:this._onClick}, React.DOM.a( {href:providerLink}, provider.ProviderName))
-        },
-
-        _onClick: function()
-        {
-        },
-
-        _updateStateFromStore: function(storeState)
-        {
-            if(storeState.valid)
-            {
-                this.setState({ providers: storeState.data.providers });
-            }
-        }   
-    });
+            this.setState({ providers: storeState.data.providers });
+        }
+    }   
 });
+
+module.exports = ProvidersList;

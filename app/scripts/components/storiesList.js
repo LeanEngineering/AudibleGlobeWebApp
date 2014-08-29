@@ -1,42 +1,37 @@
 /** @jsx React.DOM */
-define(
-[
-    "underscore",
-    "backbone",
-    "react",
-    "reflux",
 
-    "actions/storiesActions"
-],
-function (_, Backbone, React, Reflux, ACTIONS_Stories)
+var _ = require("lodash");
+var React = require("react");
+var Reflux = require("reflux");
+
+var ACTIONS_Stories = require("../actions/storiesActions");
+
+var StoriesList = React.createClass(
 {
-    return React.createClass(
+    render: function()
     {
-        render: function()
-        {
-            var stories = _.map(this.props.stories, this._createStoriesDom);
+        var stories = _.map(this.props.stories, this._createStoriesDom);
 
-            return (
-                React.DOM.div(null, 
-                    React.DOM.h2(null, "Stories"),
-                    React.DOM.ul(null, 
-                        stories
-                    )
-                )
-            )
-        },
+        return (
+            <div>
+                <h2>Stories</h2>
+                <ul>
+                    {stories}
+                </ul>
+            </div>
+        )
+    },
 
-        /* Private Helpers */
+    _createStoriesDom: function(story)
+    {
+        var storyLink = "#/providers/" + this.props.providerId + "/channels/" + this.props.channelId + "/stories/" + story.StoryId + "/edit";
+        return <li key={story.StoryId}><a href={storyLink}>{story.StoryTitle}</a><span className="glyphicon glyphicon-remove" onClick={this._onDeleteStory.bind(this, story.StoryId)}></span></li>
+    },
 
-        _createStoriesDom: function(story)
-        {
-            var storyLink = "#/providers/" + this.props.providerId + "/channels/" + this.props.channelId + "/stories/" + story.StoryId + "/edit";
-            return React.DOM.li( {key:story.StoryId}, React.DOM.a( {href:storyLink}, story.StoryTitle),React.DOM.span( {className:"glyphicon glyphicon-remove", onClick:this._onDeleteStory.bind(this, story.StoryId)}))
-        },
-
-        _onDeleteStory: function(storyId)
-        {
-            ACTIONS_Stories.deleteStory(storyId);
-        }
-    });
+    _onDeleteStory: function(storyId)
+    {
+        ACTIONS_Stories.deleteStory(storyId);
+    }
 });
+
+module.exports = StoriesList;
