@@ -15,6 +15,9 @@ var actionNames =
     "updateStory_Api_Failure",
 
     "addStory",
+    "addStory_Api_Success",
+    "addStory_Api_Failure",
+    
     "deleteStory",
     "updateStory"
 ];

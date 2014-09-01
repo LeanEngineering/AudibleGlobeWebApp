@@ -51,5 +51,23 @@ module.exports =
 		 		        ACTIONS_Stories.updateStory_Api_Success(story);
 			   		}
 			   });
+	},
+
+	addStory: function(providerId, channelId, newStory)
+	{
+		request.post("http://5a9107ddfcef4c5187c5df19c47d4639.cloudapp.net/providers/" + providerId + "/channels/" + channelId + "/stories")
+			   .send(newStory)
+			   .end(function(err, res)
+			   {
+					if(err)
+			   		{
+			   			ACTIONS_Stories.addStory_Api_Failure(err);
+			   		}
+			   		else
+			   		{
+			   			// TODO: DO NOT RETURN THE INPUT STORY!!! Need to return object in PUT endpoint in API and return that one.
+		 		        ACTIONS_Stories.addStory_Api_Success(res.body);
+			   		}
+			   });
 	}
 };

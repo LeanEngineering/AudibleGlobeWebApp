@@ -1,5 +1,6 @@
 /** @jsx React.DOM */
 
+var $ = require("jquery");
 var _ = require("lodash");
 var React = require("react");
 var Reflux = require("reflux");
@@ -7,6 +8,20 @@ var L = require("leaflet");
 
 var ACTIONS_Stories = require("../actions/storiesActions");
 var storiesStore = require("../stores/storiesStore");
+
+var StoriesExplorerList = React.createClass(
+{
+    render: function()
+    {
+        return (
+            <div>
+                <h3>Nearby Stories</h3>
+                <ul>
+                </ul>
+            </div>
+        );
+    }
+});
 
 var StoriesExplorer = React.createClass(
 {
@@ -17,20 +32,14 @@ var StoriesExplorer = React.createClass(
 
     componentWillMount: function()
     {
-        storiesStore.listen(this._updateStateFromStore);
+        L.Icon.Default.imagePath = "../node_modules/leaflet/dist/images";
 
-        navigator.geolocation.getCurrentPosition(function(position)
-        {
-            ACTIONS_Stories.exploreStories({ lat: position.coords.latitude, lon: position.coords.longitude });
-        }, function(error)
-        {
-            console.log(error);
-        });
+        storiesStore.listen(this._updateStateFromStore);
     },
 
     componentDidMount: function()
     {
-        this._map = L.map(this.getDOMNode());
+        this._map = L.map($(this.getDOMNode()).find(".exploreStoriesMapContainer")[0]);
 
         L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png",
         {
@@ -38,21 +47,36 @@ var StoriesExplorer = React.createClass(
             maxZoom: 18
         }).addTo(this._map);
 
-        this._map.on("dragend", function(e)
+        this._map.on("dragend", _.debounce(function(e)
         {
             var mapCenter = this._map.getCenter();
             ACTIONS_Stories.exploreStories({ lat: mapCenter.lat, lon: mapCenter.lng });
-        }.bind(this));
+        }.bind(this), 100));
+
+        this._map.on("locationfound", this._onLocationFound);
+        this._map.on("locationerror", alert);
+
+        this._map.locate({ setView: true, maxZoom: 16 });
     },
 
-    _updateStateFromStore: function(data)
+    _updateStateFromStore: function(storeState)
     {
         this.setState(
         {
-            stories: data.stories,
-            lat: data.latLon.lat,
-            lon: data.latLon.lon
+            stories: storeState.data.stories,
+            lat: storeState.data.latLon.lat,
+            lon: storeState.data.latLon.lon
         });
+    },
+
+    _onLocationFound: function(e)
+    {
+        ACTIONS_Stories.exploreStories({ lat: e.latlng.lat, lon: e.latlng.lng });
+
+        var radius = e.accuracy / 2;
+
+        L.marker(e.latlng).addTo(this._map).bindPopup("You are within " + radius + " meters from this point").openPopup();
+        L.circle(e.latlng, radius).addTo(this._map);
     },
 
     _createMarkersForStories: function(stories)
@@ -74,7 +98,12 @@ var StoriesExplorer = React.createClass(
         }
 
 		return (
-            <div className="exploreStoriesMapContainer"></div>
+            <div className="storiesExplorerContainer fullHeightContainer">
+                <div className="col-md-10 exploreStoriesMapContainer fullHeightContainer" />
+                <div className="col-md-2 exploreStoriesListContainer fullHeightContainer">
+                    <StoriesExplorerList />
+                </div>
+            </div>
         );
 	}
 });

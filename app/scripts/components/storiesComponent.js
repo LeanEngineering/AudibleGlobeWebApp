@@ -15,7 +15,7 @@ var StoriesComponent = React.createClass(
 {
     getInitialState: function()
     {
-        return { stories: []  }
+        return { stories: [], storeStatus: "ok", error: null }
     },
 
     componentWillMount: function()
@@ -43,6 +43,10 @@ var StoriesComponent = React.createClass(
         {
             this.setState({ stories: storeState.data.stories, storeStatus: storeState.status });
         }
+        else if(storeState.status === "error")
+        {
+        	this.SetState({ storeStatus: storeState.status, error: storeStatus.error });
+        }
     },
 
     render: function()
@@ -54,9 +58,8 @@ var StoriesComponent = React.createClass(
             var selectedStory = _(this.state.stories).find({ StoryId: parseInt(this.props.params.storyId, 10) });
             components =
             (
-                <div>
-                    <div className="col-md-8">
-                        <h3>Edit Story</h3>
+                <div className="fullHeightContainer">
+                    <div className="col-md-9 fullHeightContainer">
                         <StoryEditor story={selectedStory} providerId={this.props.params.providerId} channelId={this.props.params.channelId} status={this.state.storeStatus} />
                     </div>
                 </div>
@@ -66,19 +69,21 @@ var StoriesComponent = React.createClass(
         {
             components =
             (
-                <div>
-                    <div className="col-md-8">
-                        <h3>Create New Story</h3>
-                        <StoryEditor story={null} />
+                <div className="fullHeightContainer">
+                    <div className="col-md-9 fullHeightContainer">
+                        <StoryEditor story={null} providerId={this.props.params.providerId} channelId={this.props.params.channelId} status={this.state.storeStatus} error={this.state.error} />
                     </div>
                 </div>
             );
         }
 
+        var newStoryUrl = "#/providers/" + this.props.params.providerId + "/channels/" + this.props.params.channelId + "/stories/new";
+
         return (
-            <div>
-                <div className="row">
-                    <div className="col-md-2">
+            <div className="storiesControllerContainer fullHeightContainer">
+                <div className="fullHeightContainer">
+                    <div className="col-md-3 fullHeightContainer">
+		                <h2>Stories <span><a href={newStoryUrl}>(Add New)</a></span></h2>
                         <StoriesList stories={this.state.stories} providerId={this.props.params.providerId} channelId={this.props.params.channelId} />
                     </div>
                     {components}

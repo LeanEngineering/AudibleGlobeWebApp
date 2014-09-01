@@ -16,6 +16,6 @@ var actions = Reflux.createActions(
 	"deleteChannel_Api_Failure"
 ]);
 
-_(_.keys(actions)).each(function(key) { if(actions[key].listen) actions[key].listen(function() { console.log(key); }); });
+// _(_.keys(actions)).each(function(key) { if(actions[key].listen) actions[key].listen(function() { console.log(key); }); });
 
 module.exports = actions;

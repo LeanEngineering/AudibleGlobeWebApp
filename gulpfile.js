@@ -104,10 +104,22 @@ gulp.task("connect", $.connect.server(
 }));
 
 // Bower helper
-gulp.task("bower", function()
+gulp.task("bower", [ "node_modules" ], function()
 {
     gulp.src("app/bower_components/**/*.js", {base: "app/bower_components"})
         .pipe(gulp.dest("dist/bower_components/"));
+
+    gulp.src("app/bower_components/**/assets/**/*.*", {base: "app/bower_components" })
+        .pipe(gulp.dest("dist/bower_components"));
+});
+
+gulp.task("node_modules", function()
+{
+    gulp.src("node_modules/leaflet/dist/*.*", {base:"node_modules"})
+        .pipe(gulp.dest("dist/node_modules/"));
+
+    gulp.src("node_modules/leaflet/dist/images/*.*", {base: "node_modules"})
+        .pipe(gulp.dest("dist/node_modules"));
 });
 
 gulp.task("json", function()
@@ -122,8 +134,6 @@ var CustomMocha = function()
 {
     return through.obj(function(file, encoding, done)
     {
-        console.log(path.basename(file.path));
-
         browserify({ entries: file.path, transform: [ "reactify" ] })
                .bundle()
                .pipe(source(path.basename(file.path)))

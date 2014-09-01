@@ -36,7 +36,7 @@ var ProvidersList = React.createClass(
         var providers = _.map(this.state.providers, this._createProviderDom);
 
         return (
-            <div>
+            <div className="proviersListContainer">
                 <h2>Providers</h2>
                 <ul>
                     {providers}

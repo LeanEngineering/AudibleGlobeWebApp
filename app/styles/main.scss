@@ -1,6 +1,8 @@
-$icon-font-path: "/bower_components/bootstrap-sass-official/vender/assets/fonts/";
+$icon-font-path: "/bower_components/bootstrap-sass-official/assets/fonts/bootstrap/";
 
 @import "bootstrap-sass-official/assets/stylesheets/bootstrap";
+
+html, body { height: 100%; overflow: hidden; }
 
 .browsehappy
 {
@@ -10,23 +12,34 @@ $icon-font-path: "/bower_components/bootstrap-sass-official/vender/assets/fonts/
     padding: 0.2em 0;
 }
 
-/* Space out content a bit */
 body
 {
-    padding-top: 20px;
-    padding-bottom: 20px;
+    //padding-top: 20px;
+    //padding-bottom: 20px;
 }
 
-/* Everything but the jumbotron gets side spacing for mobile first views */
+#app, .appContainer { height: 100%; }
+
+.mainContent
+{
+    height: calc(100% - 80px);
+    margin-top: 60px;
+}
+
+.fullHeightContainer { height: 100%; }
+
 .header,
-.marketing,
-.footer
+footer
 {
     padding-left: 15px;
     padding-right: 15px;
 }
 
-/* Custom page header */
+.navbar
+{
+    background-color: #FFFFFF;
+}
+
 .header
 {
     border-bottom: 1px solid #e5e5e5;
@@ -41,102 +54,96 @@ body
     }
 }
 
-/* Custom page footer */
-.footer
+footer
 {
     padding-top: 19px;
     color: #777;
     border-top: 1px solid #e5e5e5;
 }
 
-.container-narrow > hr
+@mixin fullWidth
 {
-    margin: 30px 0;
+    width: 100%;
 }
 
-/* Main marketing message and sign up button */
-.jumbotron
+.fullWidth
 {
-    text-align: center;
-    border-bottom: 1px solid #e5e5e5;
-    .btn
+    @include fullWidth();
+}
+
+.storyEditorFormContainer
+{
+    input
     {
-        font-size: 21px;
-        padding: 14px 24px;
+        @include fullWidth();
+    }
+
+    textarea
+    {
+        @include fullWidth();
+        height: 300px;
     }
 }
 
-/* Supporting marketing content */
-.marketing
+.storyEditorMapContainer
 {
-    margin: 40px 0;
-    p + h4
+    height: 600px;
+}
+
+
+
+/*
+ * Lists
+ */
+.storiesListContainer, .proviersListContainer, .channelsListContainer
+{
+    ul
     {
-        margin-top: 28px;
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    li
+    {
+        font: 200 12px/1.5 Helvetica, Verdana, sans-serif;
+        border-bottom: 1px solid #ccc;
+    }
+
+    li:last-child
+    {
+        border: none;
+    }
+
+    li a
+    {
+        text-decoration: none;
+        color: #000;
+        display: block;
+        width: 200px;
+
+        -webkit-transition: font-size 0.3s ease, background-color 0.3s ease;
+        -moz-transition: font-size 0.3s ease, background-color 0.3s ease;
+        -o-transition: font-size 0.3s ease, background-color 0.3s ease;
+        -ms-transition: font-size 0.3s ease, background-color 0.3s ease;
+        transition: font-size 0.3s ease, background-color 0.3s ease;
+    }
+
+    li a:hover
+    {
+        background: #f6f6f6;
+        color: #000;
+        text-decoration: none;
     }
 }
 
-/* Responsive: Portrait tablets and up */
-@media screen and (min-width: 768px)
+.storiesControllerContainer
 {
-    .container
+    h2
     {
-        max-width: 730px;
+        a
+        {
+            font-size: 14px;
+        }
     }
-
-    /* Remove the padding we set earlier */
-    .header,
-    .marketing,
-    .footer
-    {
-        padding-left: 0;
-        padding-right: 0;
-    }
-
-    /* Space out the masthead */
-    .header
-    {
-        margin-bottom: 30px;
-    }
-
-    /* Remove the bottom border on the jumbotron for visual effect */
-    .jumbotron
-    {
-        border-bottom: 0;
-    }
-}
-
-.container
-{
-	width: auto;
-	max-width: 680px;
-	padding: 0 15px;
-}
-
-.sub-header
-{
-	padding-bottom: 10px;
-	border-bottom: 1px solid #eee;
-}
-
-.navbar-fixed-top
-{
-	border: 0;
-}
-
-.navbar-fixed-top
-{
-	border: 0;
-}
-
-.mapContainer
-{
-	width: 800px;
-	height: 800px;
-}
-
-.exploreStoriesMapContainer
-{
-	width: 1200px;
-	height: 800px;
 }

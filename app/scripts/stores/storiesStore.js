@@ -23,11 +23,15 @@ module.exports = Reflux.createStore(
         this.listenTo(ACTIONS_Stories.updateStory, this._onUpdateStory);
         this.listenTo(ACTIONS_Stories.updateStory_Api_Success, this._onUpdateStoryApiSuccess);
         this.listenTo(ACTIONS_Stories.updateStory_Api_Failure, this._onUpdateStoryApiFailure);
+
+        this.listenTo(ACTIONS_Stories.addStory, this._onAddStory);
+        this.listenTo(ACTIONS_Stories.addStory_Api_Success, this._onAddStory_ApiSuccess);
+		this.listenTo(ACTIONS_Stories.addStory_Api_Failure, this._onAddStory_ApiFailure);        
     },
 
     _onExploreStories: function(latLon)
     {
-        StoriesApi.getStoriesNearby(latLon.lat, latLon.lon, 100);
+        StoriesApi.getStoriesNearby(latLon.lat, latLon.lon, 100000);
 
         this._state.latLon =
         {
@@ -153,5 +157,32 @@ module.exports = Reflux.createStore(
         };
 
         this.trigger(this._state);
+    },
+
+    _onAddStory: function(options)
+    {
+    	StoriesApi.addStory(options.providerId, options.channelId, options.newStory);
+
+    	this._state.status = "inprogress";
+    	this._state.data.stories.push(options.newStory);
+
+    	this.trigger(this._state);
+    },
+
+    _onAddStory_ApiSuccess: function(newStory)
+    {
+    	this._state.status = "ok";
+
+    	_.remove(this._state.data.stories, { StoryId: null });
+    	this._state.data.stories.push(newStory);
+
+    	this.trigger(this._state);
+    },
+
+    _onAddStory_ApiFailure: function(error)
+    {
+    	this._state.status = "error";
+    	_.remove(this._state.data.stories, { StoryId: null });
+    	this.trigger(this._state);
     }
 });

@@ -13,8 +13,7 @@ var StoriesList = React.createClass(
         var stories = _.map(this.props.stories, this._createStoriesDom);
 
         return (
-            <div>
-                <h2>Stories</h2>
+            <div className="storiesListContainer">
                 <ul>
                     {stories}
                 </ul>
@@ -25,12 +24,7 @@ var StoriesList = React.createClass(
     _createStoriesDom: function(story)
     {
         var storyLink = "#/providers/" + this.props.providerId + "/channels/" + this.props.channelId + "/stories/" + story.StoryId + "/edit";
-        return <li key={story.StoryId}><a href={storyLink}>{story.StoryTitle}</a><span className="glyphicon glyphicon-remove" onClick={this._onDeleteStory.bind(this, story.StoryId)}></span></li>
-    },
-
-    _onDeleteStory: function(storyId)
-    {
-        ACTIONS_Stories.deleteStory(storyId);
+        return <li key={story.StoryId}><a href={storyLink}>{story.StoryTitle}</a></li>
     }
 });
 
